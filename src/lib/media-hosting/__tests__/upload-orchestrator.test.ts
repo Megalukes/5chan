@@ -46,22 +46,22 @@ describe('orchestrateUpload', () => {
   });
 
   it('uploads via forge with metadata stripped', async () => {
-    vi.mocked(uploadToForge).mockResolvedValue({ url: 'https://img.bitsocialforge.com/abc/photo.jpg' });
+    vi.mocked(uploadToForge).mockResolvedValue({ url: 'https://forgeimg.net/abc/photo.jpg' });
     const file = new File([new Uint8Array(jpegWithComment)], 'photo.jpg', { type: 'image/jpeg' });
 
     const { url } = await orchestrateUpload(file, ['forge']);
 
-    expect(url).toBe('https://img.bitsocialforge.com/abc/photo.jpg');
+    expect(url).toBe('https://forgeimg.net/abc/photo.jpg');
     const uploaded = vi.mocked(uploadToForge).mock.calls[0][0];
     expect(uploaded.name).toBe('photo.jpg');
     expect(Array.from(new Uint8Array(await uploaded.arrayBuffer()))).toEqual(jpegWithoutComment);
   });
 
   it('passes through a forge upload that is awaiting review', async () => {
-    vi.mocked(uploadToForge).mockResolvedValue({ url: 'https://img.bitsocialforge.com/abc/game.swf', awaitingReview: true });
+    vi.mocked(uploadToForge).mockResolvedValue({ url: 'https://forgeimg.net/abc/game.swf', awaitingReview: true });
     const file = new File(['FWS'], 'game.swf', { type: 'application/x-shockwave-flash' });
 
-    await expect(orchestrateUpload(file, ['forge'])).resolves.toEqual({ url: 'https://img.bitsocialforge.com/abc/game.swf', awaitingReview: true });
+    await expect(orchestrateUpload(file, ['forge'])).resolves.toEqual({ url: 'https://forgeimg.net/abc/game.swf', awaitingReview: true });
   });
 
   it('records the stage carried by a forge error instead of parsing its message', async () => {
