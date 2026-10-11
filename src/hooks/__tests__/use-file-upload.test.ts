@@ -199,7 +199,7 @@ describe('useFileUpload', () => {
   });
 
   it('uploads via web file picker + orchestrator with forge under the default settings', async () => {
-    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://img.bitsocialforge.com/abc/web.png' });
+    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://forgeimg.net/abc/web.png' });
 
     const selectedFile = new File(['abc'], 'web.png', { type: 'image/png' });
     const { onUploadComplete, hook } = mountHook();
@@ -218,13 +218,13 @@ describe('useFileUpload', () => {
     expect(orchestrateUpload).toHaveBeenCalledWith(selectedFile, ['forge']);
     expect(FileUploader.pickAndUploadMedia).not.toHaveBeenCalled();
     expect(window.alert).not.toHaveBeenCalled();
-    expect(onUploadComplete).toHaveBeenCalledWith('https://img.bitsocialforge.com/abc/web.png', 'web.png');
+    expect(onUploadComplete).toHaveBeenCalledWith('https://forgeimg.net/abc/web.png', 'web.png');
     expect(hook().uploadedFileName).toBe('web.png');
     expect(hook().isUploading).toBe(false);
   });
 
   it('inserts the link and tells the uploader when the host holds the file for review', async () => {
-    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://img.bitsocialforge.com/abc/game.swf', awaitingReview: true });
+    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://forgeimg.net/abc/game.swf', awaitingReview: true });
 
     const selectedFile = new File(['FWS'], 'game.swf', { type: 'application/x-shockwave-flash' });
     const { onUploadComplete, hook } = mountHook();
@@ -238,7 +238,7 @@ describe('useFileUpload', () => {
       await uploadPromise;
     });
 
-    expect(onUploadComplete).toHaveBeenCalledWith('https://img.bitsocialforge.com/abc/game.swf', 'game.swf');
+    expect(onUploadComplete).toHaveBeenCalledWith('https://forgeimg.net/abc/game.swf', 'game.swf');
     expect(window.alert).toHaveBeenCalledWith('upload_awaiting_review');
     expect(hook().isUploading).toBe(false);
   });
@@ -251,7 +251,7 @@ describe('useFileUpload', () => {
           resolveAvailability = resolve;
         }),
     );
-    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://img.bitsocialforge.com/abc/early.png' });
+    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://forgeimg.net/abc/early.png' });
     const selectedFile = new File(['abc'], 'early.png', { type: 'image/png' });
     const { onUploadComplete, hook } = mountHook();
 
@@ -269,7 +269,7 @@ describe('useFileUpload', () => {
     });
 
     expect(orchestrateUpload).toHaveBeenCalledWith(selectedFile, ['forge']);
-    expect(onUploadComplete).toHaveBeenCalledWith('https://img.bitsocialforge.com/abc/early.png', 'early.png');
+    expect(onUploadComplete).toHaveBeenCalledWith('https://forgeimg.net/abc/early.png', 'early.png');
   });
 
   it('shows the generic no-providers error on web when forge is unreachable', async () => {
@@ -363,7 +363,7 @@ describe('useFileUpload', () => {
   });
 
   it('uploads a generated file via the orchestrator on web', async () => {
-    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://img.bitsocialforge.com/abc/tegaki.png' });
+    vi.mocked(orchestrateUpload).mockResolvedValue({ url: 'https://forgeimg.net/abc/tegaki.png' });
     const file = new File(['abc'], 'tegaki.png', { type: 'image/png' });
     const { onUploadComplete, hook } = mountHook();
 
@@ -374,8 +374,8 @@ describe('useFileUpload', () => {
 
     expect(orchestrateUpload).toHaveBeenCalledWith(file, ['forge']);
     expect(FileUploader.uploadGeneratedMedia).not.toHaveBeenCalled();
-    expect(result).toEqual({ url: 'https://img.bitsocialforge.com/abc/tegaki.png', fileName: 'tegaki.png' });
-    expect(onUploadComplete).toHaveBeenCalledWith('https://img.bitsocialforge.com/abc/tegaki.png', 'tegaki.png');
+    expect(result).toEqual({ url: 'https://forgeimg.net/abc/tegaki.png', fileName: 'tegaki.png' });
+    expect(onUploadComplete).toHaveBeenCalledWith('https://forgeimg.net/abc/tegaki.png', 'tegaki.png');
   });
 
   it('silently ignores file selection cancellation', async () => {

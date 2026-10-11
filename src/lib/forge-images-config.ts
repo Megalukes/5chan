@@ -1,5 +1,5 @@
 /**
- * Forge Images (img.bitsocialforge.com) endpoints and Turnstile sitekey.
+ * Forge Images (forgeimg.net) endpoints and Turnstile sitekey.
  *
  * Production values are the defaults. Dev builds can point at a local Forge
  * Images backend with these Vite env vars:
@@ -21,6 +21,6 @@ const readOrigin = (value: string | undefined, fallback: string): string => read
 
 export const FORGE_IMAGES_API_ORIGIN = readOrigin(import.meta.env.VITE_FORGE_IMAGES_API_ORIGIN, 'https://img-api.bitsocialforge.com');
 
-export const FORGE_IMAGES_MEDIA_ORIGIN = readOrigin(import.meta.env.VITE_FORGE_IMAGES_MEDIA_ORIGIN, 'https://img.bitsocialforge.com');
+export const FORGE_IMAGES_MEDIA_ORIGIN = readOrigin(import.meta.env.VITE_FORGE_IMAGES_MEDIA_ORIGIN, 'https://forgeimg.net');
 
 export const FORGE_IMAGES_TURNSTILE_SITEKEY = readEnv(import.meta.env.VITE_FORGE_IMAGES_TURNSTILE_SITEKEY, TURNSTILE_SITEKEY);
