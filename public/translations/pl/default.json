@@ -523,5 +523,6 @@
   "directory_vote_board_unreachable": "Nie udało się wczytać {{address}}, aby sprawdzić ustawienia. Tablica musi być online, aby można ją było zgłosić.",
   "pin_thread": "przypnij wątek",
   "unpin_thread": "odepnij wątek",
-  "upload_awaiting_review": "Przesłano, ale host musi sprawdzić ten plik, zanim będzie można go wyświetlić. Link zacznie działać po zatwierdzeniu, co może potrwać kilka godzin. Możesz opublikować go już teraz."
+  "upload_awaiting_review": "Przesłano, ale host musi sprawdzić ten plik, zanim będzie można go wyświetlić. Link zacznie działać po zatwierdzeniu, co może potrwać kilka godzin. Możesz opublikować go już teraz.",
+  "vimeo_thumbnail_link_conversion_notice": "Wykryto link Vimeo. Wklejam miniaturę za {{count}}..."
 }

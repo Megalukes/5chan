@@ -523,5 +523,6 @@
   "directory_vote_board_unreachable": "No se pudo cargar {{address}} para comprobar su configuración. Un tablón debe estar en línea para poder enviarse.",
   "pin_thread": "Fijar hilo",
   "unpin_thread": "Desfijar hilo",
-  "upload_awaiting_review": "Subido, pero el alojamiento debe revisar este archivo antes de que pueda verse. El enlace empezará a funcionar cuando se apruebe, lo que puede tardar unas horas. Puedes publicarlo ahora."
+  "upload_awaiting_review": "Subido, pero el alojamiento debe revisar este archivo antes de que pueda verse. El enlace empezará a funcionar cuando se apruebe, lo que puede tardar unas horas. Puedes publicarlo ahora.",
+  "vimeo_thumbnail_link_conversion_notice": "Se detectó un enlace de Vimeo. Pegando imagen en miniatura en {{count}}..."
 }
