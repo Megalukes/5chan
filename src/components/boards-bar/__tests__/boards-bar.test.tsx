@@ -4,6 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import BoardsBar from '../boards-bar';
+import usePersistentBoardsBarStore from '../../../stores/use-persistent-boards-bar-store';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 const act = (React as { act?: (cb: () => void | Promise<void>) => void | Promise<void> }).act as (cb: () => void | Promise<void>) => void | Promise<void>;
@@ -223,6 +224,21 @@ describe('BoardsBar', () => {
     });
 
     expect(testState.openDirectoryModalMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('makes only the persistable instance fixed when the persistent setting is on', async () => {
+    usePersistentBoardsBarStore.getState().setPersistentBoardsBar(true);
+    try {
+      await act(async () => {
+        root.render(createElement(MemoryRouter, { initialEntries: ['/mu'] }, createElement(BoardsBar, { persistable: true }), createElement(BoardsBar)));
+      });
+
+      expect(container.querySelectorAll('[class*="boardNavDesktop"]')).toHaveLength(2);
+      expect(container.querySelectorAll('[class*="boardNavDesktop"][class*="persistent"]')).toHaveLength(1);
+      expect(container.querySelectorAll('[class*="persistentSpacer"]')).toHaveLength(1);
+    } finally {
+      usePersistentBoardsBarStore.getState().setPersistentBoardsBar(false);
+    }
   });
 
   it('links the feedback directory when /q/ is visible', async () => {

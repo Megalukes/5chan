@@ -75,7 +75,7 @@
 .boardNavDesktop.persistent {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--frames-sidebar-width, 0px);
   right: 0;
   z-index: 3;
   padding: 2px 5px;

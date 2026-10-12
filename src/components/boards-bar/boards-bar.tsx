@@ -1,4 +1,4 @@
-import { memo, RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccountComment } from '@bitsocial/bitsocial-react-hooks';
@@ -38,10 +38,17 @@ const findBoardAddressByCode = (code: string, directories: DirectoryCommunity[])
 const useElementHeight = (ref: RefObject<HTMLElement | null>, enabled: boolean) => {
   const [height, setHeight] = useState(0);
 
-  useEffect(() => {
+  // Layout effect so the spacer has its height before the first paint with the bar fixed.
+  useLayoutEffect(() => {
     const element = ref.current;
-    if (!enabled || !element || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(() => setHeight(element.offsetHeight));
+    if (!enabled || !element) return;
+    const measure = () => setHeight(element.offsetHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const observer = new ResizeObserver(measure);
     observer.observe(element);
     return () => observer.disconnect();
   }, [ref, enabled]);
@@ -49,9 +56,10 @@ const useElementHeight = (ref: RefObject<HTMLElement | null>, enabled: boolean) 
   return height;
 };
 
-// Takes no props and renders one Link per directory board, so a parent rerender is pure
-// waste: it was re-rendering ~80 Links on every store notification.
-const BoardsBarDesktop = memo(() => {
+// Renders one Link per directory board and takes a single boolean prop, so a parent rerender is
+// pure waste: it was re-rendering ~80 Links on every store notification.
+// Only the top instance can be persistent; the footer renders a second copy that must stay in place.
+const BoardsBarDesktop = memo(({ persistable }: { persistable: boolean }) => {
   const { t } = useTranslation();
   const location = useLocation();
   const params = useParams();
@@ -63,7 +71,7 @@ const BoardsBarDesktop = memo(() => {
   const { openDirectoryModal } = useDirectoryModalStore();
   const { visibleDirectories, showSubscriptionsInBoardsBar } = useBoardsBarVisibilityStore();
   const directories = useDirectories();
-  const persistentBoardsBar = usePersistentBoardsBarStore((state) => state.persistentBoardsBar);
+  const persistentBoardsBar = usePersistentBoardsBarStore((state) => state.persistentBoardsBar) && persistable;
   const boardNavRef = useRef<HTMLDivElement>(null);
   const boardNavHeight = useElementHeight(boardNavRef, persistentBoardsBar);
 
@@ -358,7 +366,7 @@ const BoardsBarMobile = memo(({ communityAddress }: { communityAddress?: string 
 });
 BoardsBarMobile.displayName = 'BoardsBarMobile';
 
-const BoardsBar = memo(() => {
+const BoardsBar = memo(({ persistable = false }: { persistable?: boolean }) => {
   const params = useParams();
   const location = useLocation();
   const accountComment = useAccountComment({ commentIndex: normalizeAccountCommentIndex(params?.accountCommentIndex) });
@@ -367,7 +375,7 @@ const BoardsBar = memo(() => {
 
   return (
     <>
-      <BoardsBarDesktop />
+      <BoardsBarDesktop persistable={persistable} />
       <BoardsBarMobile communityAddress={communityAddress} />
     </>
   );
