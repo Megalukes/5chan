@@ -51,6 +51,10 @@ const InterfaceSettings = () => {
   const setShowIntroduction = useHomepageIntroductionStore((state) => state.setShowIntroduction);
   const persistentBoardsBar = usePersistentBoardsBarStore((state) => state.persistentBoardsBar);
   const setPersistentBoardsBar = usePersistentBoardsBarStore((state) => state.setPersistentBoardsBar);
+  const traditionalBoardList = usePersistentBoardsBarStore((state) => state.traditionalBoardList);
+  const setTraditionalBoardList = usePersistentBoardsBarStore((state) => state.setTraditionalBoardList);
+  const autoHideBoardsBar = usePersistentBoardsBarStore((state) => state.autoHideBoardsBar);
+  const setAutoHideBoardsBar = usePersistentBoardsBarStore((state) => state.setAutoHideBoardsBar);
 
   return (
     <div className={styles.interfaceSettings}>
@@ -121,6 +125,28 @@ const InterfaceSettings = () => {
           {capitalize(t('persistent_boards_bar'))}
         </label>
         <div className={styles.settingTip}>{capitalize(t('persistent_boards_bar_tip'))}</div>
+        <div className={styles.subSetting}>
+          <label>
+            <input
+              type='checkbox'
+              aria-label={capitalize(t('use_traditional_board_list'))}
+              checked={traditionalBoardList}
+              onChange={(e) => setTraditionalBoardList(e.target.checked)}
+            />
+            {capitalize(t('use_traditional_board_list'))}
+          </label>
+        </div>
+        <div className={styles.subSetting}>
+          <label>
+            <input
+              type='checkbox'
+              aria-label={capitalize(t('auto_hide_on_scroll'))}
+              checked={autoHideBoardsBar}
+              onChange={(e) => setAutoHideBoardsBar(e.target.checked)}
+            />
+            {capitalize(t('auto_hide_on_scroll'))}
+          </label>
+        </div>
       </div>
     </div>
   );

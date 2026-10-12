@@ -526,5 +526,7 @@
   "upload_awaiting_review": "Încărcat, dar gazda trebuie să verifice acest fișier înainte să poată fi vizualizat. Linkul va începe să funcționeze după aprobare, ceea ce poate dura câteva ore. Îl poți publica acum.",
   "vimeo_thumbnail_link_conversion_notice": "Link Vimeo detectat. Lipesc imaginea miniatură în {{count}}...",
   "persistent_boards_bar": "Păstrează bara de boarduri sus",
-  "persistent_boards_bar_tip": "Lista de boarduri rămâne vizibilă în timp ce derulezi."
+  "persistent_boards_bar_tip": "Lista de boarduri rămâne vizibilă în timp ce derulezi.",
+  "use_traditional_board_list": "Folosește lista tradițională de boarduri",
+  "auto_hide_on_scroll": "Ascunde automat la derulare"
 }

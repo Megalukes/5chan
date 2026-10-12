@@ -82,6 +82,7 @@
   background-color: var(--boardsbar-mobile-background-color);
   border-bottom: var(--boardsbar-mobile-border-bottom);
   display: flow-root;
+  transition: transform 0.2s ease-in-out;
 }
 
 .boardNavMobile {
@@ -142,5 +143,19 @@
 @media (min-width: 640px) {
   .boardNavMobile {
     display: none;
+  }
+
+  /* Without the traditional board list, desktop pins the mobile board select instead. */
+  .boardNavMobile.persistentOnDesktop {
+    display: block;
+    top: 0;
+    left: var(--frames-sidebar-width, 0px);
+    right: 0;
+    width: auto;
+  }
+
+  /* The spacer query above also matches exactly 640px, where this bar is already pinned. */
+  .boardNavMobile.persistentOnDesktop + .persistentSpacer {
+    display: block;
   }
 }

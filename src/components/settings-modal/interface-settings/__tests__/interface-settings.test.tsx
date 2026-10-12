@@ -189,6 +189,27 @@ describe('InterfaceSettings', () => {
     expect(usePersistentBoardsBarStore.getState().persistentBoardsBar).toBe(false);
   });
 
+  it('toggles the persistent boards bar options', async () => {
+    usePersistentBoardsBarStore.setState({ traditionalBoardList: true, autoHideBoardsBar: false });
+    render(createElement(InterfaceSettings));
+
+    const findCheckbox = (key: string) =>
+      Array.from(container.querySelectorAll('label'))
+        .find((candidate) => candidate.textContent?.toLowerCase().includes(key))
+        ?.querySelector<HTMLInputElement>('input[type="checkbox"]');
+    const traditionalCheckbox = findCheckbox('use_traditional_board_list');
+    const autoHideCheckbox = findCheckbox('auto_hide_on_scroll');
+    expect(traditionalCheckbox?.checked).toBe(true);
+    expect(autoHideCheckbox?.checked).toBe(false);
+
+    await act(async () => traditionalCheckbox!.click());
+    await act(async () => autoHideCheckbox!.click());
+
+    expect(usePersistentBoardsBarStore.getState().traditionalBoardList).toBe(false);
+    expect(usePersistentBoardsBarStore.getState().autoHideBoardsBar).toBe(true);
+    usePersistentBoardsBarStore.setState({ traditionalBoardList: true, autoHideBoardsBar: false });
+  });
+
   it('toggles fit expanded images through the media store', async () => {
     render(createElement(InterfaceSettings));
 

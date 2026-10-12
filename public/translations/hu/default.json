@@ -526,5 +526,7 @@
   "upload_awaiting_review": "Feltöltve, de a tárhelynek ellenőriznie kell ezt a fájlt, mielőtt megtekinthető lesz. A link a jóváhagyás után kezd működni, ami néhány órát is igénybe vehet. Már most közzéteheted.",
   "vimeo_thumbnail_link_conversion_notice": "Vimeo-link észlelve. Bélyegkép beillesztése {{count}} múlva...",
   "persistent_boards_bar": "A táblasáv maradjon felül",
-  "persistent_boards_bar_tip": "A táblák listája görgetés közben is látható marad."
+  "persistent_boards_bar_tip": "A táblák listája görgetés közben is látható marad.",
+  "use_traditional_board_list": "Hagyományos táblalista használata",
+  "auto_hide_on_scroll": "Automatikus elrejtés görgetéskor"
 }

@@ -158,6 +158,20 @@ const renderBoardsBar = async (initialEntry: string | { pathname: string; state?
   });
 };
 
+// The app renders a persistable top copy and a footer copy that stays in place.
+const renderTopAndFooterBoardsBars = async () => {
+  await act(async () => {
+    root.render(createElement(MemoryRouter, { initialEntries: ['/mu'] }, createElement(BoardsBar, { persistable: true }), createElement(BoardsBar)));
+  });
+};
+
+const scrollWindowTo = async (scrollY: number) => {
+  await act(async () => {
+    window.scrollY = scrollY;
+    window.dispatchEvent(new Event('scroll'));
+  });
+};
+
 describe('BoardsBar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -191,6 +205,7 @@ describe('BoardsBar', () => {
   afterEach(() => {
     act(() => root.unmount());
     container.remove();
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: false, traditionalBoardList: true, autoHideBoardsBar: false });
   });
 
   it('renders desktop board groups and subscription links, then opens edit/create/directory actions', async () => {
@@ -238,6 +253,101 @@ describe('BoardsBar', () => {
       expect(container.querySelectorAll('[class*="persistentSpacer"]')).toHaveLength(1);
     } finally {
       usePersistentBoardsBarStore.getState().setPersistentBoardsBar(false);
+    }
+  });
+
+  it('keeps the pinned board list in view while scrolling when auto-hide is off', async () => {
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true });
+    await renderTopAndFooterBoardsBars();
+
+    const pinnedBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"][class*="persistent"]');
+    expect(pinnedBar?.getAttribute('data-pinned-top-bar')).toBe('fixed');
+
+    await scrollWindowTo(100);
+
+    expect(pinnedBar?.style.transform).toBe('');
+  });
+
+  it('slides the pinned board list out while scrolling down when auto-hide is on', async () => {
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, autoHideBoardsBar: true });
+    await renderTopAndFooterBoardsBars();
+
+    const pinnedBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"][class*="persistent"]');
+    const footerBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"]:not([class*="persistent"])');
+    expect(pinnedBar?.getAttribute('data-pinned-top-bar')).toBe('auto-hide');
+
+    await scrollWindowTo(100);
+
+    expect(pinnedBar?.style.transform).toBe('translateY(-100%)');
+    expect(footerBar?.style.transform).toBe('');
+
+    await scrollWindowTo(60);
+
+    expect(pinnedBar?.style.transform).toBe('');
+  });
+
+  it('shows the pinned board list again when auto-hide is turned off and back on', async () => {
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, autoHideBoardsBar: true });
+    await renderTopAndFooterBoardsBars();
+    await scrollWindowTo(100);
+
+    await act(async () => {
+      usePersistentBoardsBarStore.setState({ autoHideBoardsBar: false });
+    });
+    await act(async () => {
+      usePersistentBoardsBarStore.setState({ autoHideBoardsBar: true });
+    });
+
+    expect(container.querySelector<HTMLElement>('[class*="boardNavDesktop"][class*="persistent"]')?.style.transform).toBe('');
+  });
+
+  it('pins the board select instead of the top board list when the traditional list is off', async () => {
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: false });
+    await renderTopAndFooterBoardsBars();
+
+    // Only the footer keeps its board list.
+    expect(container.querySelectorAll('[class*="boardNavDesktop"]')).toHaveLength(1);
+    expect(container.querySelector('[class*="boardNavDesktop"][class*="persistent"]')).toBeNull();
+    const pinnedSelectBars = container.querySelectorAll<HTMLElement>('[class*="persistentOnDesktop"]');
+    expect(pinnedSelectBars).toHaveLength(1);
+    expect(pinnedSelectBars[0].querySelector('select')).toBeTruthy();
+    expect(pinnedSelectBars[0].getAttribute('data-pinned-top-bar')).toBe('fixed');
+    expect(container.querySelectorAll('[class*="persistentSpacer"]')).toHaveLength(1);
+
+    await scrollWindowTo(100);
+
+    expect(pinnedSelectBars[0].style.transform).toBe('');
+  });
+
+  it('slides the pinned board select out while scrolling down when auto-hide is on', async () => {
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: false, autoHideBoardsBar: true });
+    await renderTopAndFooterBoardsBars();
+
+    const pinnedSelectBar = container.querySelector<HTMLElement>('[class*="persistentOnDesktop"]');
+    expect(pinnedSelectBar?.getAttribute('data-pinned-top-bar')).toBe('auto-hide');
+
+    await scrollWindowTo(100);
+
+    expect(pinnedSelectBar?.style.transform).toBe('translateY(-100%)');
+  });
+
+  it('keeps the regular mobile bar on mobile when the traditional list is off', async () => {
+    const desktopWidth = window.innerWidth;
+    window.innerWidth = 500;
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: false });
+    try {
+      await renderTopAndFooterBoardsBars();
+
+      const mobileBars = container.querySelectorAll<HTMLElement>('[class*="boardNavMobile"]');
+      expect(container.querySelector('[class*="persistentOnDesktop"]')).toBeNull();
+      expect(container.querySelector('[class*="persistentSpacer"]')).toBeNull();
+      expect(container.querySelector('[data-pinned-top-bar]')).toBeNull();
+
+      await scrollWindowTo(100);
+
+      expect(mobileBars[0].style.transform).toBe('translateY(-100%)');
+    } finally {
+      window.innerWidth = desktopWidth;
     }
   });
 
@@ -300,15 +410,15 @@ describe('BoardsBar', () => {
 
     expect(testState.navigateMock).toHaveBeenCalledWith('/all/catalog');
 
-    const mobileNav = container.querySelector<HTMLElement>('[style*="translateY"]');
-    expect(mobileNav?.style.transform).toBe('translateY(0)');
+    const mobileNav = container.querySelector<HTMLElement>('[class*="boardNavMobile"]');
+    expect(mobileNav?.style.transform).toBe('');
 
     await act(async () => {
       window.scrollY = 100;
       window.dispatchEvent(new Event('scroll'));
     });
 
-    expect(mobileNav?.style.transform).toBe('translateY(-23px)');
+    expect(mobileNav?.style.transform).toBe('translateY(-100%)');
   });
 
   it('keeps the mobile board context for legacy account comments', async () => {

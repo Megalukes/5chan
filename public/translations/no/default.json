@@ -526,5 +526,7 @@
   "upload_awaiting_review": "Lastet opp, men verten må gå gjennom denne filen før den kan vises. Lenken begynner å virke når den er godkjent, noe som kan ta noen timer. Du kan poste den nå.",
   "vimeo_thumbnail_link_conversion_notice": "Vimeo-lenke oppdaget. Limer inn miniatyrbilde om {{count}}...",
   "persistent_boards_bar": "Hold tavlelinjen øverst",
-  "persistent_boards_bar_tip": "Tavlelisten forblir synlig mens du blar."
+  "persistent_boards_bar_tip": "Tavlelisten forblir synlig mens du blar.",
+  "use_traditional_board_list": "Bruk tradisjonell tavleliste",
+  "auto_hide_on_scroll": "Skjul automatisk ved rulling"
 }
