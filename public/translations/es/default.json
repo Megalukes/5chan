@@ -524,5 +524,7 @@
   "pin_thread": "Fijar hilo",
   "unpin_thread": "Desfijar hilo",
   "upload_awaiting_review": "Subido, pero el alojamiento debe revisar este archivo antes de que pueda verse. El enlace empezará a funcionar cuando se apruebe, lo que puede tardar unas horas. Puedes publicarlo ahora.",
-  "vimeo_thumbnail_link_conversion_notice": "Se detectó un enlace de Vimeo. Pegando imagen en miniatura en {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Se detectó un enlace de Vimeo. Pegando imagen en miniatura en {{count}}...",
+  "persistent_boards_bar": "Mantener la barra de tablones arriba",
+  "persistent_boards_bar_tip": "La lista de tablones sigue visible mientras te desplazas."
 }

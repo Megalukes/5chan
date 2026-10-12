@@ -524,5 +524,7 @@
   "pin_thread": "固定主题",
   "unpin_thread": "取消固定主题",
   "upload_awaiting_review": "已上传，但托管方需要先审核此文件才能查看。审核通过后链接即可使用，这可能需要几个小时。你现在就可以发布。",
-  "vimeo_thumbnail_link_conversion_notice": "检测到 Vimeo 链接。将在 {{count}} 后粘贴缩略图..."
+  "vimeo_thumbnail_link_conversion_notice": "检测到 Vimeo 链接。将在 {{count}} 后粘贴缩略图...",
+  "persistent_boards_bar": "将版块栏固定在顶部",
+  "persistent_boards_bar_tip": "滚动时版块列表保持可见。"
 }

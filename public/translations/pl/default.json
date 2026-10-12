@@ -524,5 +524,7 @@
   "pin_thread": "przypnij wątek",
   "unpin_thread": "odepnij wątek",
   "upload_awaiting_review": "Przesłano, ale host musi sprawdzić ten plik, zanim będzie można go wyświetlić. Link zacznie działać po zatwierdzeniu, co może potrwać kilka godzin. Możesz opublikować go już teraz.",
-  "vimeo_thumbnail_link_conversion_notice": "Wykryto link Vimeo. Wklejam miniaturę za {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Wykryto link Vimeo. Wklejam miniaturę za {{count}}...",
+  "persistent_boards_bar": "Przypnij pasek tablic u góry",
+  "persistent_boards_bar_tip": "Lista tablic pozostaje widoczna podczas przewijania."
 }

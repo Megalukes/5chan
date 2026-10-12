@@ -524,5 +524,7 @@
   "pin_thread": "थ्रेड पिन करा",
   "unpin_thread": "थ्रेड अनपिन करा",
   "upload_awaiting_review": "अपलोड झाले, पण पाहता येण्यापूर्वी होस्टने या फाइलचे पुनरावलोकन करणे आवश्यक आहे. मंजुरी मिळाल्यावर लिंक काम करू लागेल, यास काही तास लागू शकतात. तुम्ही ती आता पोस्ट करू शकता.",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeo लिंक आढळली. {{count}} मध्ये थंबनेल प्रतिमा पेस्ट करत आहे..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeo लिंक आढळली. {{count}} मध्ये थंबनेल प्रतिमा पेस्ट करत आहे...",
+  "persistent_boards_bar": "बोर्ड बार वर ठेवा",
+  "persistent_boards_bar_tip": "स्क्रोल करताना बोर्डांची यादी दिसत राहते."
 }

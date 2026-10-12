@@ -524,5 +524,7 @@
   "pin_thread": "スレッドをピン留め",
   "unpin_thread": "スレッドのピン留めを解除",
   "upload_awaiting_review": "アップロードしましたが、表示できるようになる前にホストによるこのファイルの審査が必要です。承認されるとリンクが機能し始めます。数時間かかる場合があります。今すぐ投稿することもできます。",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeoリンクを検出しました。{{count}}後にサムネイル画像を貼り付けます..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeoリンクを検出しました。{{count}}後にサムネイル画像を貼り付けます...",
+  "persistent_boards_bar": "板バーを上部に固定する",
+  "persistent_boards_bar_tip": "スクロール中も板の一覧が表示されたままになります。"
 }

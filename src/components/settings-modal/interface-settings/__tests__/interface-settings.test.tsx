@@ -8,6 +8,7 @@ import useFeedViewSettingsStore from '../../../../stores/use-feed-view-settings-
 import { INTERFACE_LANGUAGE_STORAGE_KEY } from '../../../../lib/constants';
 import useAppUpdateStore from '../../../../stores/use-app-update-store';
 import useHomepageIntroductionStore from '../../../../stores/use-homepage-introduction-store';
+import usePersistentBoardsBarStore from '../../../../stores/use-persistent-boards-bar-store';
 
 vi.hoisted(() => {
   vi.stubEnv('VITE_APP_DISTRIBUTION', 'github');
@@ -169,6 +170,23 @@ describe('InterfaceSettings', () => {
     expect(checkbox?.checked).toBe(true);
     expect(container.querySelector('[data-testid="board-mode"]')?.textContent).toBe('infinite');
     expect(localStorage.getItem(STORAGE_KEY)).toContain('"enableInfiniteScroll":true');
+  });
+
+  it('toggles the persistent boards bar setting', async () => {
+    usePersistentBoardsBarStore.getState().setPersistentBoardsBar(false);
+    render(createElement(InterfaceSettings));
+
+    const label = Array.from(container.querySelectorAll('label')).find((candidate) => candidate.textContent?.toLowerCase().includes('persistent_boards_bar'));
+    const checkbox = label?.querySelector<HTMLInputElement>('input[type="checkbox"]');
+    expect(checkbox).toBeTruthy();
+    expect(checkbox!.checked).toBe(false);
+
+    await act(async () => checkbox!.click());
+    expect(checkbox!.checked).toBe(true);
+    expect(usePersistentBoardsBarStore.getState().persistentBoardsBar).toBe(true);
+
+    await act(async () => checkbox!.click());
+    expect(usePersistentBoardsBarStore.getState().persistentBoardsBar).toBe(false);
   });
 
   it('toggles fit expanded images through the media store', async () => {

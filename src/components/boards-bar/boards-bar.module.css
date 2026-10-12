@@ -72,6 +72,17 @@
   cursor: pointer;
 }
 
+.boardNavDesktop.persistent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 2px 5px;
+  background-color: var(--boardsbar-mobile-background-color);
+  border-bottom: var(--boardsbar-mobile-border-bottom);
+  display: flow-root;
+}
 
 .boardNavMobile {
   padding: 2px 4px;
@@ -123,7 +134,7 @@
 }
 
 @media (max-width: 640px) {
-  .boardNavDesktop {
+  .boardNavDesktop, .persistentSpacer {
     display: none;
   }
 }

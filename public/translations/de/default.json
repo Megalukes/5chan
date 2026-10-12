@@ -524,5 +524,7 @@
   "pin_thread": "Thread anheften",
   "unpin_thread": "Thread lösen",
   "upload_awaiting_review": "Hochgeladen, aber der Host muss diese Datei prüfen, bevor sie angezeigt werden kann. Der Link funktioniert, sobald sie freigegeben ist, was einige Stunden dauern kann. Du kannst sie jetzt schon posten.",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeo-Link erkannt. Vorschaubild wird in {{count}} eingefügt..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeo-Link erkannt. Vorschaubild wird in {{count}} eingefügt...",
+  "persistent_boards_bar": "Boardleiste oben fixieren",
+  "persistent_boards_bar_tip": "Die Boardliste bleibt beim Scrollen sichtbar."
 }

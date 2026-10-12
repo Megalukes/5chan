@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccountComment } from '@bitsocial/bitsocial-react-hooks';
@@ -17,6 +17,7 @@ import useCreateBoardModalStore from '../../stores/use-create-board-modal-store'
 import useBoardsBarEditModalStore from '../../stores/use-boards-bar-edit-modal-store';
 import useBoardsBarVisibilityStore from '../../stores/use-boards-bar-visibility-store';
 import useDirectoryModalStore from '../../stores/use-directory-modal-store';
+import usePersistentBoardsBarStore from '../../stores/use-persistent-boards-bar-store';
 import { BOARD_CODE_GROUPS, getAllBoardCodes } from '../../constants/board-codes';
 import styles from './boards-bar.module.css';
 import capitalize from 'lodash/capitalize';
@@ -30,6 +31,22 @@ const findBoardAddressByCode = (code: string, directories: DirectoryCommunity[])
     return directory === code;
   });
   return entry?.address || null;
+};
+
+// The persistent bar is position: fixed, so a spacer has to keep its height in the page flow.
+// That height changes when the bar wraps to more lines or the subscriptions list changes.
+const useElementHeight = (ref: RefObject<HTMLElement | null>, enabled: boolean) => {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!enabled || !element || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => setHeight(element.offsetHeight));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref, enabled]);
+
+  return height;
 };
 
 // Takes no props and renders one Link per directory board, so a parent rerender is pure
@@ -46,6 +63,9 @@ const BoardsBarDesktop = memo(() => {
   const { openDirectoryModal } = useDirectoryModalStore();
   const { visibleDirectories, showSubscriptionsInBoardsBar } = useBoardsBarVisibilityStore();
   const directories = useDirectories();
+  const persistentBoardsBar = usePersistentBoardsBarStore((state) => state.persistentBoardsBar);
+  const boardNavRef = useRef<HTMLDivElement>(null);
+  const boardNavHeight = useElementHeight(boardNavRef, persistentBoardsBar);
 
   // Memoize allBoardCodes since it's derived from a constant
   const allBoardCodes = useMemo(() => getAllBoardCodes(), []);
@@ -145,90 +165,93 @@ const BoardsBarDesktop = memo(() => {
   };
 
   return (
-    <div className={styles.boardNavDesktop}>
-      <span className={styles.boardList}>
-        [<Link to={`/all${catalogSuffix}`}>all</Link> / <Link to={`/subs${catalogSuffix}`}>subs</Link>
-        {accountCommunityAddresses.length > 0 && (
-          <>
-            {' '}
-            / <Link to={`/mod${catalogSuffix}`}>mod</Link>
-          </>
-        )}
-        ]{' '}
-        {BOARD_CODE_GROUPS.map((group) => {
-          const visibleCodes = group.filter((code) => directoriesToShow.has(code));
-          if (visibleCodes.length === 0) return null;
+    <>
+      <div ref={boardNavRef} className={persistentBoardsBar ? `${styles.boardNavDesktop} ${styles.persistent}` : styles.boardNavDesktop}>
+        <span className={styles.boardList}>
+          [<Link to={`/all${catalogSuffix}`}>all</Link> / <Link to={`/subs${catalogSuffix}`}>subs</Link>
+          {accountCommunityAddresses.length > 0 && (
+            <>
+              {' '}
+              / <Link to={`/mod${catalogSuffix}`}>mod</Link>
+            </>
+          )}
+          ]{' '}
+          {BOARD_CODE_GROUPS.map((group) => {
+            const visibleCodes = group.filter((code) => directoriesToShow.has(code));
+            if (visibleCodes.length === 0) return null;
 
-          return <span key={group.join('|')}>[{visibleCodes.map((code, codeIndex) => renderBoardCode(code, codeIndex === visibleCodes.length - 1))}] </span>;
-        })}
-        {hasHiddenDirectories && !showAllTemporarily && (
-          <>
-            {' '}
-            [
-            <button
-              type='button'
-              className={styles.temporaryButton}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setShowAllTemporarily(true);
-                }
-              }}
-              onClick={() => setShowAllTemporarily(true)}
-              title='Show all'
-            >
-              ...
-            </button>
-            ]{' '}
-          </>
-        )}
-        {visibleSubscriptionAddresses.length > 0 && (
-          <>[{visibleSubscriptionAddresses.map((address: string, index: number) => renderSubscription(address, index, visibleSubscriptionAddresses.length))}] </>
-        )}
-        [
-        <button
-          type='button'
-          className={styles.temporaryButton}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              openBoardsBarEditModal();
-            }
-          }}
-          onClick={() => openBoardsBarEditModal()}
-        >
-          {capitalize(t('edit'))}
-        </button>
-        ] [
-        <button
-          type='button'
-          className={styles.temporaryButton}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              openCreateBoardModal();
-            }
-          }}
-          onClick={() => openCreateBoardModal()}
-        >
-          {t('create_board')}
-        </button>
-        ]
-      </span>
-      <span className={styles.navTopRight}>
-        [
-        <Link
-          to={`${!location.pathname.endsWith('settings') ? location.pathname.replace(/\/$/, '') + '/settings' : location.pathname}${location.search}`}
-          state={location.state}
-        >
-          {t('settings')}
-        </Link>
-        ] [<Link to={SEARCH_PATH}>{capitalize(t('search'))}</Link>] [<Link to='/'>{t('home')}</Link>]
-      </span>
-    </div>
+            return <span key={group.join('|')}>[{visibleCodes.map((code, codeIndex) => renderBoardCode(code, codeIndex === visibleCodes.length - 1))}] </span>;
+          })}
+          {hasHiddenDirectories && !showAllTemporarily && (
+            <>
+              {' '}
+              [
+              <button
+                type='button'
+                className={styles.temporaryButton}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setShowAllTemporarily(true);
+                  }
+                }}
+                onClick={() => setShowAllTemporarily(true)}
+                title='Show all'
+              >
+                ...
+              </button>
+              ]{' '}
+            </>
+          )}
+          {visibleSubscriptionAddresses.length > 0 && (
+            <>[{visibleSubscriptionAddresses.map((address: string, index: number) => renderSubscription(address, index, visibleSubscriptionAddresses.length))}] </>
+          )}
+          [
+          <button
+            type='button'
+            className={styles.temporaryButton}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openBoardsBarEditModal();
+              }
+            }}
+            onClick={() => openBoardsBarEditModal()}
+          >
+            {capitalize(t('edit'))}
+          </button>
+          ] [
+          <button
+            type='button'
+            className={styles.temporaryButton}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openCreateBoardModal();
+              }
+            }}
+            onClick={() => openCreateBoardModal()}
+          >
+            {t('create_board')}
+          </button>
+          ]
+        </span>
+        <span className={styles.navTopRight}>
+          [
+          <Link
+            to={`${!location.pathname.endsWith('settings') ? location.pathname.replace(/\/$/, '') + '/settings' : location.pathname}${location.search}`}
+            state={location.state}
+          >
+            {t('settings')}
+          </Link>
+          ] [<Link to={SEARCH_PATH}>{capitalize(t('search'))}</Link>] [<Link to='/'>{t('home')}</Link>]
+        </span>
+      </div>
+      {persistentBoardsBar && <div className={styles.persistentSpacer} style={{ height: boardNavHeight }} />}
+    </>
   );
 });
 BoardsBarDesktop.displayName = 'BoardsBarDesktop';

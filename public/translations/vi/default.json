@@ -524,5 +524,7 @@
   "pin_thread": "Ghim chủ đề",
   "unpin_thread": "Bỏ ghim chủ đề",
   "upload_awaiting_review": "Đã tải lên, nhưng máy chủ lưu trữ phải xem xét tệp này trước khi có thể xem được. Liên kết sẽ hoạt động sau khi được phê duyệt, việc này có thể mất vài giờ. Bạn có thể đăng ngay bây giờ.",
-  "vimeo_thumbnail_link_conversion_notice": "Đã phát hiện liên kết Vimeo. Đang dán ảnh thu nhỏ sau {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Đã phát hiện liên kết Vimeo. Đang dán ảnh thu nhỏ sau {{count}}...",
+  "persistent_boards_bar": "Giữ thanh bảng ở trên cùng",
+  "persistent_boards_bar_tip": "Danh sách bảng vẫn hiển thị khi bạn cuộn trang."
 }

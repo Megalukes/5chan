@@ -54,3 +54,10 @@
 .updateStatus {
   margin-left: 8px;
 }
+
+/* The boards bar is already fixed on mobile, so the option only matters on desktop. */
+@media (max-width: 640px) {
+  .desktopOnlySetting {
+    display: none;
+  }
+}

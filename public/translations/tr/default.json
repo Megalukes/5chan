@@ -524,5 +524,7 @@
   "pin_thread": "konuyu sabitle",
   "unpin_thread": "konunun sabitlemesini kaldır",
   "upload_awaiting_review": "Yüklendi, ancak görüntülenebilmesi için barındırıcının bu dosyayı incelemesi gerekiyor. Bağlantı onaylandığında çalışmaya başlayacak; bu birkaç saat sürebilir. Şimdi gönderebilirsin.",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeo bağlantısı algılandı. Küçük resim {{count}} içinde yapıştırılıyor..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeo bağlantısı algılandı. Küçük resim {{count}} içinde yapıştırılıyor...",
+  "persistent_boards_bar": "Pano çubuğunu üstte tut",
+  "persistent_boards_bar_tip": "Kaydırırken pano listesi görünür kalır."
 }

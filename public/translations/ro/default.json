@@ -524,5 +524,7 @@
   "pin_thread": "fixează firul",
   "unpin_thread": "anulează fixarea firului",
   "upload_awaiting_review": "Încărcat, dar gazda trebuie să verifice acest fișier înainte să poată fi vizualizat. Linkul va începe să funcționeze după aprobare, ceea ce poate dura câteva ore. Îl poți publica acum.",
-  "vimeo_thumbnail_link_conversion_notice": "Link Vimeo detectat. Lipesc imaginea miniatură în {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Link Vimeo detectat. Lipesc imaginea miniatură în {{count}}...",
+  "persistent_boards_bar": "Păstrează bara de boarduri sus",
+  "persistent_boards_bar_tip": "Lista de boarduri rămâne vizibilă în timp ce derulezi."
 }

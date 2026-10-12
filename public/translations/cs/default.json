@@ -524,5 +524,7 @@
   "pin_thread": "připnout vlákno",
   "unpin_thread": "odepnout vlákno",
   "upload_awaiting_review": "Nahráno, ale hostitel musí tento soubor před zobrazením zkontrolovat. Odkaz začne fungovat po schválení, což může trvat několik hodin. Můžete ho zveřejnit už teď.",
-  "vimeo_thumbnail_link_conversion_notice": "Byl zjištěn odkaz na Vimeo. Vkládám náhledový obrázek za {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Byl zjištěn odkaz na Vimeo. Vkládám náhledový obrázek za {{count}}...",
+  "persistent_boards_bar": "Ponechat lištu nástěnek nahoře",
+  "persistent_boards_bar_tip": "Seznam nástěnek zůstane viditelný i při posouvání."
 }
