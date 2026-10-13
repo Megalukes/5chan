@@ -36,7 +36,7 @@ Source: https://github.com/bitsocialnet/5chan/blob/master/README.md
 [![License](https://img.shields.io/badge/license-GPL--3.0--or--later-red.svg)](https://github.com/bitsocialnet/5chan/blob/master/LICENSE)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-<img src="public/assets/logo/logo-transparent.png" width="300" height="120" alt="5chan">
+<img src="docs/assets/readme-logo.png" width="378" height="126" alt="5chan">
 
 _Telegram group for this repo https://t.me/fivechandev_
 
