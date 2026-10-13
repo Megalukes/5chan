@@ -524,5 +524,9 @@
   "pin_thread": "הצמד ת’רד",
   "unpin_thread": "בטל הצמדת ת’רד",
   "upload_awaiting_review": "הקובץ הועלה, אבל המארח צריך לבדוק אותו לפני שאפשר יהיה לצפות בו. הקישור יתחיל לעבוד לאחר שיאושר, וזה עשוי להימשך כמה שעות. אפשר לפרסם אותו עכשיו.",
-  "vimeo_thumbnail_link_conversion_notice": "זוהה קישור Vimeo. מדביק תמונת ממוזערת בעוד {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "זוהה קישור Vimeo. מדביק תמונת ממוזערת בעוד {{count}}...",
+  "persistent_boards_bar": "השאר את סרגל הלוחות למעלה",
+  "persistent_boards_bar_tip": "רשימת הלוחות נשארת גלויה בזמן הגלילה.",
+  "use_traditional_board_list": "השתמש ברשימת הלוחות המסורתית",
+  "auto_hide_on_scroll": "הסתרה אוטומטית בזמן גלילה"
 }

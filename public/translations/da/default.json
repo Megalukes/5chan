@@ -524,5 +524,9 @@
   "pin_thread": "fastgør tråd",
   "unpin_thread": "frigør tråd",
   "upload_awaiting_review": "Uploadet, men værten skal gennemgå denne fil, før den kan vises. Linket begynder at virke, når den er godkendt, hvilket kan tage et par timer. Du kan poste den nu.",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeo-link registreret. Indsætter miniaturebillede om {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeo-link registreret. Indsætter miniaturebillede om {{count}}...",
+  "persistent_boards_bar": "Hold tavlelinjen øverst",
+  "persistent_boards_bar_tip": "Tavlelisten forbliver synlig, mens du scroller.",
+  "use_traditional_board_list": "Brug traditionel tavleliste",
+  "auto_hide_on_scroll": "Skjul automatisk ved scrolling"
 }

@@ -524,5 +524,9 @@
   "pin_thread": "kiinnitä keskustelu",
   "unpin_thread": "irrota keskustelu",
   "upload_awaiting_review": "Ladattu, mutta palvelun on tarkistettava tämä tiedosto ennen kuin sitä voi katsoa. Linkki alkaa toimia, kun tiedosto on hyväksytty, mikä voi kestää muutaman tunnin. Voit julkaista sen nyt.",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeo-linkki havaittu. Liitetään pikkukuva {{count}} kuluttua..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeo-linkki havaittu. Liitetään pikkukuva {{count}} kuluttua...",
+  "persistent_boards_bar": "Pidä taululuettelo ylhäällä",
+  "persistent_boards_bar_tip": "Taululuettelo pysyy näkyvissä vierittäessä.",
+  "use_traditional_board_list": "Käytä perinteistä taululuetteloa",
+  "auto_hide_on_scroll": "Piilota automaattisesti vierittäessä"
 }

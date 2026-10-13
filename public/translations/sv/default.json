@@ -524,5 +524,9 @@
   "pin_thread": "fäst tråd",
   "unpin_thread": "lossa tråd",
   "upload_awaiting_review": "Uppladdad, men värden måste granska filen innan den kan visas. Länken börjar fungera när den har godkänts, vilket kan ta några timmar. Du kan posta den nu.",
-  "vimeo_thumbnail_link_conversion_notice": "Vimeo-länk upptäckt. Klistrar in miniatyrbild om {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Vimeo-länk upptäckt. Klistrar in miniatyrbild om {{count}}...",
+  "persistent_boards_bar": "Håll tavelfältet överst",
+  "persistent_boards_bar_tip": "Tavellistan förblir synlig medan du skrollar.",
+  "use_traditional_board_list": "Använd traditionell tavellista",
+  "auto_hide_on_scroll": "Dölj automatiskt vid skrollning"
 }

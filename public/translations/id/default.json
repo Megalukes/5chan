@@ -524,5 +524,9 @@
   "pin_thread": "sematkan utas",
   "unpin_thread": "lepas sematan utas",
   "upload_awaiting_review": "Berhasil diunggah, tetapi host harus meninjau file ini sebelum dapat dilihat. Tautan akan berfungsi setelah disetujui, yang bisa memakan waktu beberapa jam. Anda bisa mempostingnya sekarang.",
-  "vimeo_thumbnail_link_conversion_notice": "Tautan Vimeo terdeteksi. Menempelkan gambar thumbnail dalam {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Tautan Vimeo terdeteksi. Menempelkan gambar thumbnail dalam {{count}}...",
+  "persistent_boards_bar": "Pertahankan bilah papan di atas",
+  "persistent_boards_bar_tip": "Daftar papan tetap terlihat saat Anda menggulir.",
+  "use_traditional_board_list": "Gunakan daftar papan tradisional",
+  "auto_hide_on_scroll": "Sembunyikan otomatis saat menggulir"
 }

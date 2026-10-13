@@ -524,5 +524,9 @@
   "pin_thread": "i-pin ang thread",
   "unpin_thread": "i-unpin ang thread",
   "upload_awaiting_review": "Na-upload na, pero kailangang suriin muna ng host ang file na ito bago ito matingnan. Gagana ang link kapag naaprubahan na ito, na maaaring tumagal nang ilang oras. Puwede mo na itong i-post ngayon.",
-  "vimeo_thumbnail_link_conversion_notice": "May nakita na link ng Vimeo. Ipi-paste ang thumbnail image sa loob ng {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "May nakita na link ng Vimeo. Ipi-paste ang thumbnail image sa loob ng {{count}}...",
+  "persistent_boards_bar": "Panatilihin ang boards bar sa itaas",
+  "persistent_boards_bar_tip": "Nananatiling nakikita ang listahan ng boards habang nag-i-scroll ka.",
+  "use_traditional_board_list": "Gamitin ang tradisyunal na listahan ng boards",
+  "auto_hide_on_scroll": "Awtomatikong itago kapag nag-i-scroll"
 }

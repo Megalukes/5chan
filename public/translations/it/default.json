@@ -524,5 +524,9 @@
   "pin_thread": "Fissa thread",
   "unpin_thread": "Rimuovi fissaggio thread",
   "upload_awaiting_review": "Caricato, ma l'host deve esaminare questo file prima che possa essere visualizzato. Il link inizierà a funzionare una volta approvato, il che può richiedere qualche ora. Puoi pubblicarlo subito.",
-  "vimeo_thumbnail_link_conversion_notice": "Link Vimeo rilevato. Incollando l'immagine di anteprima tra {{count}}..."
+  "vimeo_thumbnail_link_conversion_notice": "Link Vimeo rilevato. Incollando l'immagine di anteprima tra {{count}}...",
+  "persistent_boards_bar": "Mantieni la barra delle board in alto",
+  "persistent_boards_bar_tip": "L'elenco delle board resta visibile durante lo scorrimento.",
+  "use_traditional_board_list": "Usa l'elenco tradizionale delle board",
+  "auto_hide_on_scroll": "Nascondi automaticamente durante lo scorrimento"
 }
