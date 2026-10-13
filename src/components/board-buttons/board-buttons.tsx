@@ -11,6 +11,9 @@ import { getBoardPath, isDirectoryRoute } from '../../lib/utils/route-utils';
 import { useResolvedCommunityAddress } from '../../hooks/use-resolved-community-address';
 import { useBoardHasArchive } from '../../hooks/use-board-has-archive';
 import { useCommunityIdentifier } from '../../hooks/use-community-identifiers';
+import { useActiveAccountField } from '../../hooks/use-active-account-field';
+import { useCommunityField } from '../../hooks/use-stable-community';
+import { canEditBoardSettings } from '../../lib/utils/mod-access';
 import { normalizeAccountCommentIndex } from '../../lib/utils/account-comment-index-utils';
 import useHiddenCatalogThreads from '../../hooks/use-hidden-catalog-threads';
 import useCatalogFiltersStore from '../../stores/use-catalog-filters-store';
@@ -148,6 +151,26 @@ const SubscribeButton = ({ address }: BoardButtonsProps) => {
       {subscribed ? t('unsubscribe') : t('subscribe')}
     </button>
   );
+};
+
+const BoardSettingsButton = ({ address, isMobile = false }: { address?: string; isMobile?: boolean }) => {
+  const { t } = useTranslation();
+  const directories = useDirectories();
+  const accountAddress = useActiveAccountField((account) => account?.author?.address);
+  const accountRole = useCommunityField(address, (community) => (accountAddress ? community?.roles?.[accountAddress]?.role : undefined));
+  // pkc-js only exposes private settings to the node that hosts the board.
+  const isHostedOnConnectedNode = useCommunityField(address, (community) => Boolean(community?.settings));
+
+  if (!address || !canEditBoardSettings(accountRole, Boolean(isHostedOnConnectedNode))) {
+    return null;
+  }
+
+  const link = (
+    <Link className='button' to={`/${getBoardPath(address, directories)}/board-settings`}>
+      {t('board_settings')}
+    </Link>
+  );
+  return isMobile ? link : <> [{link}]</>;
 };
 
 export const ReturnButton = ({ address, isInAllView, isInSubscriptionsView, isInModView, isInModQueueView }: BoardButtonsProps) => {
@@ -670,6 +693,7 @@ export const MobileBoardButtons = () => {
             {showDirectoryButton && <DirectoryButton />}
             {!(isInAllView || isInSubscriptionsView || isInModView) && <SubscribeButton address={communityAddress} />}
             {!(isInAllView || isInSubscriptionsView) && <ModQueueButton boardIdentifier={boardIdentifier} isMobile={true} />}
+            {!isMultiboard && <BoardSettingsButton address={communityAddress} isMobile={true} />}
           </div>
           {showTimeFilter && (
             <>
@@ -891,6 +915,7 @@ export const DesktopBoardButtons = () => {
                 <ModQueueButton boardIdentifier={boardIdentifier} isMobile={false} />
               </>
             )}
+            {!isMultiboard && <BoardSettingsButton address={communityAddress} />}
             {isInCatalogView && <CatalogSearchResultsLabel />}
             <span className={styles.rightSideButtons}>
               {isInCatalogView && (
