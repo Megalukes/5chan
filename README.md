@@ -10,7 +10,7 @@ _Telegram group for this repo https://t.me/fivechandev_
 
 # 5chan
 
-5chan is a serverless, adminless, decentralized and open-source imageboard built on the [Bitsocial protocol](https://bitsocial.net). It features the classic imageboard directory structure, but with a crucial difference: **anyone can create and own boards, and multiple boards can compete for each directory slot**.
+5chan is meant to replace 4chan for people who already use it. It's a decentralized, open-source imageboard built on the [Bitsocial protocol](https://bitsocial.net). It features the classic imageboard directory structure, but with a crucial difference: **anyone can create and own boards, and multiple boards can compete for each directory slot**.
 
 ## Key Features
 

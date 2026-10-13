@@ -32,12 +32,12 @@ const FAQ_SECTIONS: FAQSection[] = [
         question: 'What is 5chan?',
         answer: (
           <>
-            5chan is a serverless, adminless, decentralized imageboard built on the{' '}
+            5chan is meant to replace 4chan for people who already use it. It's a decentralized, open-source imageboard built on the{' '}
             <a href='https://bitsocial.net' {...externalLinkProps}>
               Bitsocial
             </a>{' '}
-            protocol. It keeps the familiar board, thread, and anonymous posting flow of imageboards, but boards are Bitsocial communities owned by their operators
-            instead of by one global website administrator.
+            protocol. It keeps 4chan's familiar board, thread, and anonymous posting flow, but boards are Bitsocial communities owned by their operators instead of by one
+            global website administrator.
           </>
         ),
       },
