@@ -20,6 +20,9 @@ type TestComment = {
   };
   cid?: string;
   content?: string;
+  deleted?: boolean;
+  removed?: boolean;
+  link?: string;
   error?: Error;
   commentModeration?: {
     archived?: boolean;
@@ -122,7 +125,8 @@ vi.mock('@bitsocial/bitsocial-react-hooks', async () => {
   return {
     resolveReplySortType,
     useAccount: () => activeAccount,
-    useAccountComment: ({ commentCid }: { commentCid?: string }) => (commentCid ? enrichAccountCommentAuthor(testState.accountCommentsByCid[commentCid]) : undefined),
+    useAccountComment: ({ commentCid }: { commentCid?: string }) =>
+      (commentCid ? enrichAccountCommentAuthor(testState.accountCommentsByCid[commentCid]) : undefined) ?? { state: 'initializing' },
     useComment: ({ commentCid, autoUpdate, community }: { commentCid?: string; autoUpdate?: boolean; community?: { name?: string; publicKey?: string } }) => {
       testState.useCommentCalls.push({ commentCid, autoUpdate, community });
       return commentCid ? testState.commentsByCid[commentCid] : undefined;
@@ -232,6 +236,13 @@ vi.mock('../../../components/post-desktop/post-desktop', () => ({
       'div',
       {
         'data-testid': 'post-desktop',
+        'data-content': post?.content || '',
+        'data-title': post?.title || '',
+        'data-link': post?.link || '',
+        'data-state': post?.state || '',
+        'data-removed': String(!!post?.removed),
+        'data-deleted': String(!!post?.deleted),
+        'data-purged': String(!!post?.commentModeration?.purged),
         'data-approved': post?.approved === undefined ? '' : String(post.approved),
         'data-author-address': post?.author?.address || '',
         'data-author-short-address': post?.author?.shortAddress || '',
@@ -268,6 +279,13 @@ vi.mock('../../../components/post-mobile/post-mobile', () => ({
       'div',
       {
         'data-testid': 'post-mobile',
+        'data-content': post?.content || '',
+        'data-title': post?.title || '',
+        'data-link': post?.link || '',
+        'data-state': post?.state || '',
+        'data-removed': String(!!post?.removed),
+        'data-deleted': String(!!post?.deleted),
+        'data-purged': String(!!post?.commentModeration?.purged),
         'data-approved': post?.approved === undefined ? '' : String(post.approved),
         'data-author-address': post?.author?.address || '',
         'data-author-short-address': post?.author?.shortAddress || '',
@@ -648,6 +666,66 @@ describe('Post', () => {
     expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-transfer-enabled')).toBe('false');
   });
 
+  it.each([false, true])('waits for moderation before displaying a cold thread (mobile=%s)', async (isMobile) => {
+    testState.isMobile = isMobile;
+    const rawPost = {
+      cid: 'cold-cid',
+      communityAddress: 'music-posting.eth',
+      timestamp: Date.now() / 1000,
+      title: 'Unmoderated title',
+      content: 'Unmoderated body',
+      link: 'https://example.com/removed.jpg',
+      author: { address: 'unmoderated-author' },
+      // Hooks can report succeeded for recent posts even without a CommentUpdate.
+      state: 'succeeded',
+    };
+    testState.commentsByCid = { 'cold-cid': rawPost };
+
+    await renderPostPage('/mu/thread/cold-cid');
+
+    const presenter = () => container.querySelector(`[data-testid="post-${isMobile ? 'mobile' : 'desktop'}"]`);
+    expect(presenter()?.getAttribute('data-content')).toBe('');
+    expect(presenter()?.getAttribute('data-title')).toBe('');
+    expect(presenter()?.getAttribute('data-link')).toBe('');
+    expect(presenter()?.getAttribute('data-author-address')).toBe('');
+    expect(presenter()?.getAttribute('data-state')).toBe('fetching-update-ipns');
+    expect(document.title).toBe('/mu/ - 5chan');
+
+    testState.commentsByCid = { 'cold-cid': { ...rawPost, updatedAt: 100, removed: true } };
+    await renderPostPage('/mu/thread/cold-cid');
+    expect(presenter()?.getAttribute('data-removed')).toBe('true');
+  });
+
+  it.each(['visible', 'deleted', 'purged'])('waits for the update before presenting a %s thread', async (status) => {
+    const rawPost = { cid: 'cold-cid', communityAddress: 'music-posting.eth', timestamp: 1, content: 'Original body', state: 'fetching-update-ipns' };
+    testState.commentsByCid = { 'cold-cid': rawPost };
+    await renderPostPage('/mu/thread/cold-cid');
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-content')).toBe('');
+
+    testState.commentsByCid = {
+      'cold-cid': { ...rawPost, updatedAt: 100, state: 'succeeded', deleted: status === 'deleted', commentModeration: { purged: status === 'purged' } },
+    };
+    await renderPostPage('/mu/thread/cold-cid');
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-content')).toBe('Original body');
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-deleted')).toBe(String(status === 'deleted'));
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-purged')).toBe(String(status === 'purged'));
+  });
+
+  it('does not insert an unmoderated linked reply into a loaded thread', async () => {
+    const rawReply = { cid: 'reply-cid', communityAddress: 'music-posting.eth', parentCid: 'root-cid', postCid: 'root-cid', timestamp: 1, content: 'Unmoderated reply' };
+    testState.commentsByCid = {
+      'reply-cid': rawReply,
+      'root-cid': { cid: 'root-cid', communityAddress: 'music-posting.eth', timestamp: 1, updatedAt: 100, content: 'Root body' },
+    };
+    await renderPostPage('/mu/thread/reply-cid');
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-content')).toBe('Root body');
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-reply-contents')).toBe('');
+
+    testState.commentsByCid['reply-cid'] = { ...rawReply, updatedAt: 100 };
+    await renderPostPage('/mu/thread/reply-cid');
+    expect(container.querySelector('[data-testid="post-desktop"]')?.getAttribute('data-reply-contents')).toBe('Unmoderated reply');
+  });
+
   it('hydrates thread pages from cached feed data, sets the document title, and renders thread footers', async () => {
     testState.commentsByCid = {
       'cached-cid': {
@@ -661,6 +739,7 @@ describe('Post', () => {
         cid: 'cached-cid',
         content: 'cached body',
         number: 42,
+        updatedAt: 100,
         replyCount: 0,
         communityAddress: 'music-posting.eth',
         title: 'Cached thread',
@@ -720,6 +799,7 @@ describe('Post', () => {
         },
         content: 'remote body',
         number: 14,
+        updatedAt: 100,
         replyCount: 3,
         communityAddress: 'music-posting.eth',
         title: 'Remote thread',
@@ -758,6 +838,7 @@ describe('Post', () => {
         },
         content: 'remote body',
         number: 16,
+        updatedAt: 100,
         replyCount: 0,
         communityAddress: 'music-posting.eth',
         title: 'Remote thread',
@@ -793,6 +874,7 @@ describe('Post', () => {
         },
         content: 'remote body',
         number: 15,
+        updatedAt: 100,
         pendingApproval: false,
         replyCount: 0,
         communityAddress: 'music-posting.eth',
@@ -832,6 +914,7 @@ describe('Post', () => {
           archived: true,
         },
         number: 777,
+        updatedAt: 100,
         replyCount: 0,
         communityAddress: 'music-posting.eth',
         title: 'Archived thread',
@@ -849,6 +932,7 @@ describe('Post', () => {
       'thread-cid': {
         cid: 'thread-cid',
         number: 8,
+        updatedAt: 100,
         replyCount: 0,
         communityAddress: 'music-posting.eth',
         title: 'Thread title',
@@ -971,6 +1055,7 @@ describe('Post', () => {
         cid: 'legacy-cid',
         content: 'cached body',
         number: 7,
+        updatedAt: 100,
         replyCount: 0,
         communityAddress: 'music-posting.eth',
         title: 'Legacy thread',
@@ -999,6 +1084,7 @@ describe('Post', () => {
         error: new Error('thread failed'),
         locked: true,
         number: 99,
+        updatedAt: 100,
         replies: [],
         replyCount: 4,
         communityAddress: 'music-posting.eth',
@@ -1025,6 +1111,7 @@ describe('Post', () => {
       'root-cid': {
         cid: 'root-cid',
         number: 33,
+        updatedAt: 100,
         replyCount: 1,
         communityAddress: 'music-posting.eth',
         title: 'Root thread',
@@ -1221,7 +1308,16 @@ describe('Post', () => {
     const linkedReply = { cid: 'reply-cid', communityAddress: 'music-posting.eth', parentCid: 'root-cid', postCid: 'root-cid', timestamp: 2 };
     testState.commentsByCid = {
       'reply-cid': { ...linkedReply, content: 'original body', updatedAt: 100 },
-      'root-cid': { cid: 'root-cid', communityAddress: 'music-posting.eth', number: 31, postCid: 'root-cid', replyCount: 1, timestamp: 1, title: 'Root thread' },
+      'root-cid': {
+        cid: 'root-cid',
+        communityAddress: 'music-posting.eth',
+        number: 31,
+        postCid: 'root-cid',
+        replyCount: 1,
+        timestamp: 1,
+        updatedAt: 100,
+        title: 'Root thread',
+      },
     };
     testState.repliesByCommentCid = { 'root-cid': [{ ...linkedReply, content: 'original body', updatedAt: 90 }] };
 
@@ -1257,6 +1353,7 @@ describe('Post', () => {
         cid: 'root-cid',
         communityAddress: 'music-posting.eth',
         number: 31,
+        updatedAt: 100,
         postCid: 'root-cid',
         refresh: refreshPost,
         replyCount: 0,
@@ -1314,6 +1411,7 @@ describe('Post', () => {
         cid: 'root-cid',
         communityAddress: 'music-posting.eth',
         number: 31,
+        updatedAt: 100,
         postCid: 'root-cid',
         refresh: vi.fn(async () => {
           throw new Error('offline');
@@ -1342,6 +1440,7 @@ describe('Post', () => {
         cid: 'root-cid',
         communityAddress: 'music-posting.eth',
         number: 31,
+        updatedAt: 100,
         postCid: 'root-cid',
         replyCount: 0,
         title: 'Root thread',

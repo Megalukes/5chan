@@ -94,10 +94,11 @@ const mergeLocalAccountComment = (comment: CommentWithRefresh | undefined, accou
 // This hook falls back to the communities pages store and then overlays a matching
 // local account author so author controls keep working after publish navigation.
 // The thread stays as loaded until Update or Auto refreshes it, like a 4chan thread page.
-const useCommentWithFeedCache = (options: { commentCid: string | undefined; community?: CommunityIdentifier }): CommentWithRefresh | undefined => {
+const useCommentWithFeedCache = (options: { commentCid: string | undefined; community?: CommunityIdentifier }) => {
   const comment = useComment({ ...options, autoUpdate: false });
   const cachedComment = useCommunitiesPagesStore((state) => state.comments[options?.commentCid || '']);
-  const accountComment = useAccountComment({ commentCid: options.commentCid }) as CommentWithRefresh | undefined;
+  const resolvedAccountComment = useAccountComment({ commentCid: options.commentCid }) as CommentWithRefresh | undefined;
+  const accountComment = options.commentCid && resolvedAccountComment?.cid === options.commentCid ? resolvedAccountComment : undefined;
 
   const commentWithFeedCache = useMemo(() => {
     if (!cachedComment || comment?.timestamp) return comment;
@@ -110,7 +111,13 @@ const useCommentWithFeedCache = (options: { commentCid: string | undefined; comm
     } as CommentWithRefresh;
   }, [comment, cachedComment]);
 
-  return useMemo(() => mergeLocalAccountComment(commentWithFeedCache, accountComment), [commentWithFeedCache, accountComment]);
+  const mergedComment = useMemo(() => mergeLocalAccountComment(commentWithFeedCache, accountComment), [commentWithFeedCache, accountComment]);
+  return {
+    comment: mergedComment,
+    // The immutable IPFS payload arrives before the community's moderation update.
+    // Only local publications may be previewed before that update is available.
+    isReady: typeof mergedComment?.updatedAt === 'number' || !!accountComment,
+  };
 };
 
 const mergeRepliesWithQueuedReply = (replies: Comment[], queuedReply: CommentWithRefresh | undefined): Comment[] => {
@@ -148,9 +155,10 @@ const PostPage = () => {
 
   const { communityAddress: cidCommunityAddress } = useCommentCidPayload(commentCid);
   const commentCommunityIdentifier = useCommunityIdentifier(cidCommunityAddress ?? resolvedCommunityAddress);
-  const resolvedComment = useCommentWithFeedCache({ commentCid, community: commentCommunityIdentifier });
+  const { comment: resolvedComment, isReady: isResolvedCommentReady } = useCommentWithFeedCache({ commentCid, community: commentCommunityIdentifier });
   const queuedComment = useMemo(() => getQueuedCommentFromRouteState(routeState, commentCid), [routeState, commentCid]);
   const comment = useMemo(() => mergeLocalCommentAuthor(mergeCommentFallback(resolvedComment, queuedComment), queuedComment), [resolvedComment, queuedComment]);
+  const isCommentReady = isResolvedCommentReady || !!queuedComment;
   const commentCommunityAddress = getCommentCommunityAddress(comment);
   const authoritativeCommentCommunityAddress = hasAuthoritativeCommentPayload(comment) ? commentCommunityAddress : undefined;
   const communityAddress = authoritativeCommentCommunityAddress ?? resolvedCommunityAddress;
@@ -187,11 +195,26 @@ const PostPage = () => {
   const { error: communityError, shortAddress, title } = community || {};
 
   // if the comment is a reply, return the post comment instead, then the reply will be highlighted in the thread
-  const postComment = useCommentWithFeedCache({
+  const { comment: postComment, isReady: isPostCommentReady } = useCommentWithFeedCache({
     commentCid: comment?.parentCid ? comment.postCid : undefined,
     community: authoritativeCommentCommunityAddress ? communityIdentifier : undefined,
   });
   const post = useMemo(() => (comment?.parentCid ? mergeCommentFallback(postComment, comment) : comment), [comment, postComment]);
+  const isPostReady = comment?.parentCid ? isPostCommentReady : isCommentReady;
+  const displayPost = useMemo(
+    () =>
+      isPostReady || !post
+        ? post
+        : ({
+            cid: post.cid,
+            communityAddress: post.communityAddress,
+            // A recent immutable payload can already have state="succeeded".
+            state: post.state === 'succeeded' ? 'fetching-update-ipns' : post.state,
+            error: post.error,
+            errors: post.errors,
+          } as CommentWithRefresh),
+    [isPostReady, post],
+  );
   threadRefreshCommentsRef.current = [comment, post];
   const requestedThreadTopCid = getRequestedThreadTopCid(routeState);
 
@@ -232,18 +255,18 @@ const PostPage = () => {
       boardTitle = title ? title : shortAddress || communityAddress || '';
     }
 
-    const postTitle = post?.title?.slice(0, 30) || post?.content?.slice(0, 30);
+    const postTitle = displayPost?.title?.slice(0, 30) || displayPost?.content?.slice(0, 30);
     const postTitlePart = postTitle ? ` - ${postTitle.trim()}...` : '';
     const unreadCountPart = unreadCount > 0 ? `(${unreadCount}) ` : '';
     document.title = `${unreadCountPart}${boardTitle}${postTitlePart} - 5chan`;
-  }, [title, shortAddress, communityAddress, post?.title, post?.content, isInAllView, t, boardIdentifier, directories, unreadCount]);
+  }, [title, shortAddress, communityAddress, displayPost?.title, displayPost?.content, isInAllView, t, boardIdentifier, directories, unreadCount]);
 
   const shouldShowCommentError = comment?.error?.message && !comment?.cid;
   const shouldShowPostError = post?.error && post?.replyCount > 0 && post?.replies?.length === 0;
   const shouldShowCommunityError = communityError?.message && !post?.cid;
 
   const targetReplyCid = comment?.parentCid ? comment?.cid : undefined;
-  const queuedReply = comment?.parentCid && post?.cid && comment.cid !== post.cid ? comment : undefined;
+  const queuedReply = isCommentReady && comment?.parentCid && post?.cid && comment.cid !== post.cid ? comment : undefined;
   const queuedReplyRepliesResult = useReplies({
     comment: queuedReply && post?.cid ? post : undefined,
     sortType: resolveReplySortType(post, 'old'),
@@ -309,7 +332,7 @@ const PostPage = () => {
           <ErrorDisplay error={error} />
         </div>
       )}
-      <Post post={post} showAllReplies={true} targetReplyCid={targetReplyCid} replyPaginationOverride={replyPaginationOverride} />
+      <Post post={displayPost} showAllReplies={true} targetReplyCid={targetReplyCid} replyPaginationOverride={isPostReady ? replyPaginationOverride : undefined} />
       {shouldShowCommunityError && (
         <div className={styles.error}>
           <ErrorDisplay error={communityError} />
