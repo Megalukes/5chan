@@ -572,5 +572,6 @@
   "persistent_boards_bar_tip": "스크롤하는 동안에도 게시판 목록이 계속 보입니다.",
   "use_traditional_board_list": "기존 게시판 목록 사용",
   "auto_hide_on_scroll": "스크롤 시 자동으로 숨기기",
-  "open_challenge": "챌린지 열기"
+  "open_challenge": "챌린지 열기",
+  "board_unreachable_from_browsers": "인터넷에서 이 컴퓨터에 접속할 수 없어 브라우저에서 이 보드를 불러올 수 없습니다. 해결하려면 공유기에서 포트 4001(TCP 및 UDP)을 이 컴퓨터로 포트포워딩하거나 공유기에서 UPnP를 켜세요. 인터넷 통신사에서 이를 허용하지 않으면 대신 서버에서 보드를 호스팅하세요."
 }

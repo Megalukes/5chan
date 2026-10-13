@@ -572,5 +572,6 @@
   "persistent_boards_bar_tip": "スクロール中も板の一覧が表示されたままになります。",
   "use_traditional_board_list": "従来の板一覧を使用する",
   "auto_hide_on_scroll": "スクロール時に自動で隠す",
-  "open_challenge": "チャレンジを開く"
+  "open_challenge": "チャレンジを開く",
+  "board_unreachable_from_browsers": "インターネットからこのコンピューターに接続できないため、ブラウザーではこのボードを読み込めません。解決するには、ルーターでポート 4001（TCP と UDP）をこのコンピューターに転送するか、ルーターで UPnP を有効にしてください。プロバイダーがこれを許可していない場合は、代わりにサーバーでボードをホストしてください。"
 }

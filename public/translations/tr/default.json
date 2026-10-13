@@ -572,5 +572,6 @@
   "persistent_boards_bar_tip": "Kaydırırken pano listesi görünür kalır.",
   "use_traditional_board_list": "Geleneksel pano listesini kullan",
   "auto_hide_on_scroll": "Kaydırırken otomatik gizle",
-  "open_challenge": "Zorluğu aç"
+  "open_challenge": "Zorluğu aç",
+  "board_unreachable_from_browsers": "Bu bilgisayara internetten erişilemediği için tarayıcılar bu tahtayı yükleyemiyor. Sorunu çözmek için modeminizde 4001 numaralı portu (TCP ve UDP) bu bilgisayara yönlendirin veya modeminizde UPnP'yi etkinleştirin. İnternet sağlayıcınız buna izin vermiyorsa tahtayı bunun yerine bir sunucuda barındırın."
 }

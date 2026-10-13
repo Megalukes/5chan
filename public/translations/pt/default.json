@@ -572,5 +572,6 @@
   "persistent_boards_bar_tip": "A lista de boards continua visível enquanto você rola a página.",
   "use_traditional_board_list": "Usar a lista tradicional de boards",
   "auto_hide_on_scroll": "Ocultar automaticamente ao rolar",
-  "open_challenge": "Abrir desafio"
+  "open_challenge": "Abrir desafio",
+  "board_unreachable_from_browsers": "Os navegadores não conseguem carregar este quadro porque este computador não pode ser acessado pela internet. Para resolver, redirecione a porta 4001 (TCP e UDP) do seu roteador para este computador ou ative o UPnP no seu roteador. Se o seu provedor de internet não permitir isso, hospede o quadro em um servidor."
 }

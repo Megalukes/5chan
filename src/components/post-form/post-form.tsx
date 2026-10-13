@@ -71,6 +71,7 @@ import useMediaHostingStore from '../../stores/use-media-hosting-store';
 import usePendingPostNavigationStore from '../../stores/use-pending-post-navigation-store';
 import usePostFormDraftsStore, { EMPTY_POST_FORM_STATE, type PostFormDraft } from '../../stores/use-post-form-drafts-store';
 import BoardOfflineAlert from '../board-offline-alert';
+import BoardReachabilityAlert from '../board-reachability-alert';
 import BbcodeEditorToolbar, { BbcodePreview } from '../bbcode-editor-toolbar';
 import LoadingEllipsis from '../loading-ellipsis';
 import OekakiDrawingControls from '../oekaki-drawing-controls';
@@ -1342,12 +1343,14 @@ const PostForm = () => {
   const resolvedAddress = useResolvedCommunityAddress();
   const communityAddress = resolvedAddress || accountComment?.communityAddress;
 
-  const shouldShowOfflineAlert = !(isInAllView || isInSubscriptionsView || isInModView) && showForm;
+  const isInSingleBoardView = !(isInAllView || isInSubscriptionsView || isInModView);
+  const shouldShowOfflineAlert = isInSingleBoardView && showForm;
 
   if (isMobile) {
     return (
       <div className={styles.postFormMobile}>
         {shouldShowOfflineAlert && <BoardOfflineAlert className={styles.offlineBoard} communityAddress={communityAddress} />}
+        {isInSingleBoardView && <BoardReachabilityAlert className={styles.unreachableBoard} communityAddress={communityAddress} />}
         {isInModQueueView ? (
           <div className={styles.modQueueTitle}>{t('moderation_queue')}</div>
         ) : isThreadClosed ? (
@@ -1372,6 +1375,7 @@ const PostForm = () => {
   return (
     <div className={styles.postFormDesktop}>
       {shouldShowOfflineAlert && <BoardOfflineAlert className={styles.offlineBoard} communityAddress={communityAddress} />}
+      {isInSingleBoardView && <BoardReachabilityAlert className={styles.unreachableBoard} communityAddress={communityAddress} />}
       {isInModQueueView ? (
         <div className={styles.modQueueTitle}>{t('moderation_queue')}</div>
       ) : isThreadClosed ? (
