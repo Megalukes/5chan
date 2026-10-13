@@ -528,5 +528,6 @@
   "persistent_boards_bar": "השאר את סרגל הלוחות למעלה",
   "persistent_boards_bar_tip": "רשימת הלוחות נשארת גלויה בזמן הגלילה.",
   "use_traditional_board_list": "השתמש ברשימת הלוחות המסורתית",
-  "auto_hide_on_scroll": "הסתרה אוטומטית בזמן גלילה"
+  "auto_hide_on_scroll": "הסתרה אוטומטית בזמן גלילה",
+  "open_challenge": "פתח אתגר"
 }

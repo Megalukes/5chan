@@ -528,5 +528,6 @@
   "persistent_boards_bar": "将版块栏固定在顶部",
   "persistent_boards_bar_tip": "滚动时版块列表保持可见。",
   "use_traditional_board_list": "使用传统版块列表",
-  "auto_hide_on_scroll": "滚动时自动隐藏"
+  "auto_hide_on_scroll": "滚动时自动隐藏",
+  "open_challenge": "打开挑战"
 }

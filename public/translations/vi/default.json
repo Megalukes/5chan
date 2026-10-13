@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Giữ thanh bảng ở trên cùng",
   "persistent_boards_bar_tip": "Danh sách bảng vẫn hiển thị khi bạn cuộn trang.",
   "use_traditional_board_list": "Dùng danh sách bảng truyền thống",
-  "auto_hide_on_scroll": "Tự động ẩn khi cuộn"
+  "auto_hide_on_scroll": "Tự động ẩn khi cuộn",
+  "open_challenge": "Mở thử thách"
 }

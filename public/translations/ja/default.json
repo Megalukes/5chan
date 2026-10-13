@@ -528,5 +528,6 @@
   "persistent_boards_bar": "板バーを上部に固定する",
   "persistent_boards_bar_tip": "スクロール中も板の一覧が表示されたままになります。",
   "use_traditional_board_list": "従来の板一覧を使用する",
-  "auto_hide_on_scroll": "スクロール時に自動で隠す"
+  "auto_hide_on_scroll": "スクロール時に自動で隠す",
+  "open_challenge": "チャレンジを開く"
 }

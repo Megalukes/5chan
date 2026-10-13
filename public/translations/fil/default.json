@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Panatilihin ang boards bar sa itaas",
   "persistent_boards_bar_tip": "Nananatiling nakikita ang listahan ng boards habang nag-i-scroll ka.",
   "use_traditional_board_list": "Gamitin ang tradisyunal na listahan ng boards",
-  "auto_hide_on_scroll": "Awtomatikong itago kapag nag-i-scroll"
+  "auto_hide_on_scroll": "Awtomatikong itago kapag nag-i-scroll",
+  "open_challenge": "Buksan ang hamon"
 }

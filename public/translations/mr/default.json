@@ -528,5 +528,6 @@
   "persistent_boards_bar": "बोर्ड बार वर ठेवा",
   "persistent_boards_bar_tip": "स्क्रोल करताना बोर्डांची यादी दिसत राहते.",
   "use_traditional_board_list": "पारंपरिक बोर्ड यादी वापरा",
-  "auto_hide_on_scroll": "स्क्रोल करताना आपोआप लपवा"
+  "auto_hide_on_scroll": "स्क्रोल करताना आपोआप लपवा",
+  "open_challenge": "आव्हान उघडा"
 }

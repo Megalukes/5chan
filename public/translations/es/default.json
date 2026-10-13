@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Mantener la barra de tablones arriba",
   "persistent_boards_bar_tip": "La lista de tablones sigue visible mientras te desplazas.",
   "use_traditional_board_list": "Usar la lista tradicional de tablones",
-  "auto_hide_on_scroll": "Ocultar automáticamente al desplazarse"
+  "auto_hide_on_scroll": "Ocultar automáticamente al desplazarse",
+  "open_challenge": "Abrir desafío"
 }

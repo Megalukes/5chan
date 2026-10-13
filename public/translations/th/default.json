@@ -528,5 +528,6 @@
   "persistent_boards_bar": "ตรึงแถบบอร์ดไว้ด้านบน",
   "persistent_boards_bar_tip": "รายการบอร์ดจะยังมองเห็นได้ขณะเลื่อนหน้า",
   "use_traditional_board_list": "ใช้รายการบอร์ดแบบดั้งเดิม",
-  "auto_hide_on_scroll": "ซ่อนอัตโนมัติเมื่อเลื่อน"
+  "auto_hide_on_scroll": "ซ่อนอัตโนมัติเมื่อเลื่อน",
+  "open_challenge": "เปิดความท้าทาย"
 }

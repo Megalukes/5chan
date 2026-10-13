@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Pertahankan bilah papan di atas",
   "persistent_boards_bar_tip": "Daftar papan tetap terlihat saat Anda menggulir.",
   "use_traditional_board_list": "Gunakan daftar papan tradisional",
-  "auto_hide_on_scroll": "Sembunyikan otomatis saat menggulir"
+  "auto_hide_on_scroll": "Sembunyikan otomatis saat menggulir",
+  "open_challenge": "Buka tantangan"
 }

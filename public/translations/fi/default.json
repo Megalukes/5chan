@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Pidä taululuettelo ylhäällä",
   "persistent_boards_bar_tip": "Taululuettelo pysyy näkyvissä vierittäessä.",
   "use_traditional_board_list": "Käytä perinteistä taululuetteloa",
-  "auto_hide_on_scroll": "Piilota automaattisesti vierittäessä"
+  "auto_hide_on_scroll": "Piilota automaattisesti vierittäessä",
+  "open_challenge": "Avaa haaste"
 }

@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Boardleiste oben fixieren",
   "persistent_boards_bar_tip": "Die Boardliste bleibt beim Scrollen sichtbar.",
   "use_traditional_board_list": "Klassische Boardliste verwenden",
-  "auto_hide_on_scroll": "Beim Scrollen automatisch ausblenden"
+  "auto_hide_on_scroll": "Beim Scrollen automatisch ausblenden",
+  "open_challenge": "Herausforderung öffnen"
 }

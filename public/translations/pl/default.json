@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Przypnij pasek tablic u góry",
   "persistent_boards_bar_tip": "Lista tablic pozostaje widoczna podczas przewijania.",
   "use_traditional_board_list": "Użyj tradycyjnej listy tablic",
-  "auto_hide_on_scroll": "Automatycznie ukrywaj podczas przewijania"
+  "auto_hide_on_scroll": "Automatycznie ukrywaj podczas przewijania",
+  "open_challenge": "Otwórz wyzwanie"
 }

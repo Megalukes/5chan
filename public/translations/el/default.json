@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Διατήρηση της γραμμής πινάκων στην κορυφή",
   "persistent_boards_bar_tip": "Η λίστα πινάκων παραμένει ορατή καθώς κάνετε κύλιση.",
   "use_traditional_board_list": "Χρήση της κλασικής λίστας πινάκων",
-  "auto_hide_on_scroll": "Αυτόματη απόκρυψη κατά την κύλιση"
+  "auto_hide_on_scroll": "Αυτόματη απόκρυψη κατά την κύλιση",
+  "open_challenge": "Άνοιγμα πρόκλησης"
 }

@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Manter a barra de boards no topo",
   "persistent_boards_bar_tip": "A lista de boards continua visível enquanto você rola a página.",
   "use_traditional_board_list": "Usar a lista tradicional de boards",
-  "auto_hide_on_scroll": "Ocultar automaticamente ao rolar"
+  "auto_hide_on_scroll": "Ocultar automaticamente ao rolar",
+  "open_challenge": "Abrir desafio"
 }

@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Pano çubuğunu üstte tut",
   "persistent_boards_bar_tip": "Kaydırırken pano listesi görünür kalır.",
   "use_traditional_board_list": "Geleneksel pano listesini kullan",
-  "auto_hide_on_scroll": "Kaydırırken otomatik gizle"
+  "auto_hide_on_scroll": "Kaydırırken otomatik gizle",
+  "open_challenge": "Zorluğu aç"
 }

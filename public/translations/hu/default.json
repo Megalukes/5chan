@@ -528,5 +528,6 @@
   "persistent_boards_bar": "A táblasáv maradjon felül",
   "persistent_boards_bar_tip": "A táblák listája görgetés közben is látható marad.",
   "use_traditional_board_list": "Hagyományos táblalista használata",
-  "auto_hide_on_scroll": "Automatikus elrejtés görgetéskor"
+  "auto_hide_on_scroll": "Automatikus elrejtés görgetéskor",
+  "open_challenge": "Kihívás megnyitása"
 }

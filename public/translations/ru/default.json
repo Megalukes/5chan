@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Закрепить панель досок вверху",
   "persistent_boards_bar_tip": "Список досок остаётся видимым при прокрутке.",
   "use_traditional_board_list": "Использовать классический список досок",
-  "auto_hide_on_scroll": "Автоматически скрывать при прокрутке"
+  "auto_hide_on_scroll": "Автоматически скрывать при прокрутке",
+  "open_challenge": "Открыть задачу"
 }

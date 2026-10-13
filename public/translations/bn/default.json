@@ -528,5 +528,6 @@
   "persistent_boards_bar": "বোর্ড বার উপরে রাখুন",
   "persistent_boards_bar_tip": "স্ক্রল করার সময় বোর্ডের তালিকা দেখা যায়।",
   "use_traditional_board_list": "প্রচলিত বোর্ড তালিকা ব্যবহার করুন",
-  "auto_hide_on_scroll": "স্ক্রল করলে স্বয়ংক্রিয়ভাবে লুকান"
+  "auto_hide_on_scroll": "স্ক্রল করলে স্বয়ংক্রিয়ভাবে লুকান",
+  "open_challenge": "চ্যালেঞ্জ খুলুন"
 }

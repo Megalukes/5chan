@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Garder la barre des boards en haut",
   "persistent_boards_bar_tip": "La liste des boards reste visible pendant le défilement.",
   "use_traditional_board_list": "Utiliser la liste classique des boards",
-  "auto_hide_on_scroll": "Masquer automatiquement au défilement"
+  "auto_hide_on_scroll": "Masquer automatiquement au défilement",
+  "open_challenge": "Ouvrir le défi"
 }

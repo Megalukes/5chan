@@ -528,5 +528,6 @@
   "persistent_boards_bar": "बोर्ड बार को ऊपर रखें",
   "persistent_boards_bar_tip": "स्क्रॉल करते समय बोर्ड सूची दिखती रहती है।",
   "use_traditional_board_list": "पारंपरिक बोर्ड सूची का उपयोग करें",
-  "auto_hide_on_scroll": "स्क्रॉल करने पर अपने-आप छिपाएं"
+  "auto_hide_on_scroll": "स्क्रॉल करने पर अपने-आप छिपाएं",
+  "open_challenge": "चुनौती खोलें"
 }

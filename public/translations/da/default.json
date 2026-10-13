@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Hold tavlelinjen øverst",
   "persistent_boards_bar_tip": "Tavlelisten forbliver synlig, mens du scroller.",
   "use_traditional_board_list": "Brug traditionel tavleliste",
-  "auto_hide_on_scroll": "Skjul automatisk ved scrolling"
+  "auto_hide_on_scroll": "Skjul automatisk ved scrolling",
+  "open_challenge": "Åbn udfordring"
 }

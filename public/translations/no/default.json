@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Hold tavlelinjen øverst",
   "persistent_boards_bar_tip": "Tavlelisten forblir synlig mens du blar.",
   "use_traditional_board_list": "Bruk tradisjonell tavleliste",
-  "auto_hide_on_scroll": "Skjul automatisk ved rulling"
+  "auto_hide_on_scroll": "Skjul automatisk ved rulling",
+  "open_challenge": "Åpne utfordring"
 }

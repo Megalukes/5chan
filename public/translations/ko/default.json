@@ -528,5 +528,6 @@
   "persistent_boards_bar": "게시판 바를 상단에 고정",
   "persistent_boards_bar_tip": "스크롤하는 동안에도 게시판 목록이 계속 보입니다.",
   "use_traditional_board_list": "기존 게시판 목록 사용",
-  "auto_hide_on_scroll": "스크롤 시 자동으로 숨기기"
+  "auto_hide_on_scroll": "스크롤 시 자동으로 숨기기",
+  "open_challenge": "챌린지 열기"
 }

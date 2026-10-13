@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Houd de bordenbalk bovenaan",
   "persistent_boards_bar_tip": "De bordenlijst blijft zichtbaar terwijl je scrolt.",
   "use_traditional_board_list": "Traditionele bordenlijst gebruiken",
-  "auto_hide_on_scroll": "Automatisch verbergen bij scrollen"
+  "auto_hide_on_scroll": "Automatisch verbergen bij scrollen",
+  "open_challenge": "Uitdaging openen"
 }

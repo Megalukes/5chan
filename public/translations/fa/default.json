@@ -528,5 +528,6 @@
   "persistent_boards_bar": "نوار بردها را بالا نگه دار",
   "persistent_boards_bar_tip": "فهرست بردها هنگام اسکرول نمایان می‌ماند.",
   "use_traditional_board_list": "استفاده از فهرست سنتی بردها",
-  "auto_hide_on_scroll": "پنهان‌سازی خودکار هنگام اسکرول"
+  "auto_hide_on_scroll": "پنهان‌سازی خودکار هنگام اسکرول",
+  "open_challenge": "باز کردن چالش"
 }

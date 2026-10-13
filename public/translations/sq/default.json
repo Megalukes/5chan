@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Mbaje shiritin e bordeve lart",
   "persistent_boards_bar_tip": "Lista e bordeve mbetet e dukshme ndërsa lëvizni faqen.",
   "use_traditional_board_list": "Përdor listën tradicionale të bordeve",
-  "auto_hide_on_scroll": "Fshihe automatikisht gjatë lëvizjes"
+  "auto_hide_on_scroll": "Fshihe automatikisht gjatë lëvizjes",
+  "open_challenge": "Hap sfidën"
 }

@@ -548,5 +548,6 @@
   "persistent_boards_bar": "Keep the boards bar at the top",
   "persistent_boards_bar_tip": "The board list stays visible while you scroll.",
   "use_traditional_board_list": "Use traditional board list",
-  "auto_hide_on_scroll": "Auto-hide on scroll"
+  "auto_hide_on_scroll": "Auto-hide on scroll",
+  "open_challenge": "Open challenge"
 }

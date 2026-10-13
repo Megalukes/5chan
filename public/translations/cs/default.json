@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Ponechat lištu nástěnek nahoře",
   "persistent_boards_bar_tip": "Seznam nástěnek zůstane viditelný i při posouvání.",
   "use_traditional_board_list": "Použít tradiční seznam nástěnek",
-  "auto_hide_on_scroll": "Automaticky skrýt při posouvání"
+  "auto_hide_on_scroll": "Automaticky skrýt při posouvání",
+  "open_challenge": "Otevřít výzvu"
 }

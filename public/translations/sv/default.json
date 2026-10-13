@@ -528,5 +528,6 @@
   "persistent_boards_bar": "Håll tavelfältet överst",
   "persistent_boards_bar_tip": "Tavellistan förblir synlig medan du skrollar.",
   "use_traditional_board_list": "Använd traditionell tavellista",
-  "auto_hide_on_scroll": "Dölj automatiskt vid skrollning"
+  "auto_hide_on_scroll": "Dölj automatiskt vid skrollning",
+  "open_challenge": "Öppna utmaning"
 }

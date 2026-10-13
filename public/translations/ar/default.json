@@ -528,5 +528,6 @@
   "persistent_boards_bar": "إبقاء شريط اللوحات في الأعلى",
   "persistent_boards_bar_tip": "تبقى قائمة اللوحات ظاهرة أثناء التمرير.",
   "use_traditional_board_list": "استخدام قائمة اللوحات التقليدية",
-  "auto_hide_on_scroll": "إخفاء تلقائي عند التمرير"
+  "auto_hide_on_scroll": "إخفاء تلقائي عند التمرير",
+  "open_challenge": "فتح التحدي"
 }
