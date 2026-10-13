@@ -134,6 +134,19 @@
   cursor: pointer;
 }
 
+/* The pinned desktop bar swaps its bracketed links for the page links. */
+.boardNavDesktop .pageJump {
+  padding-top: 0;
+}
+
+.boardNavDesktop .pageJump button {
+  color: var(--boardsbar-desktop-link-text-color);
+}
+
+.boardNavDesktop .pageJump button:hover {
+  color: var(--boardsbar-desktop-link-text-color-hover);
+}
+
 @media (max-width: 640px) {
   .boardNavDesktop, .persistentSpacer {
     display: none;

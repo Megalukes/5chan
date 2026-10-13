@@ -120,6 +120,33 @@ const PinnableBar = ({ className, pinned, autoHide, children }: PinnableBarProps
   );
 };
 
+const scrollToBottom = () => {
+  window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+};
+
+// 4chan's compact page links: the mobile bar always shows them, and the pinned desktop bar uses
+// them in place of its bracketed links.
+const PageJump = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+
+  return (
+    <div className={styles.pageJump}>
+      <button type='button' title={capitalize(t('bottom'))} aria-label={capitalize(t('bottom'))} onClick={scrollToBottom}>
+        ▼
+      </button>
+      <Link
+        to={`${!location.pathname.endsWith('settings') ? location.pathname.replace(/\/$/, '') + '/settings' : location.pathname}${location.search}`}
+        state={location.state}
+      >
+        {t('settings')}
+      </Link>
+      <Link to={SEARCH_PATH}>{capitalize(t('search'))}</Link>
+      <Link to='/'>{t('home')}</Link>
+    </div>
+  );
+};
+
 // Renders one Link per directory board and takes only boolean props, so a parent rerender is
 // pure waste: it was re-rendering ~80 Links on every store notification.
 const BoardsBarDesktop = memo(({ persistent, autoHide }: { persistent: boolean; autoHide: boolean }) => {
@@ -306,16 +333,20 @@ const BoardsBarDesktop = memo(({ persistent, autoHide }: { persistent: boolean; 
         </button>
         ]
       </span>
-      <span className={styles.navTopRight}>
-        [
-        <Link
-          to={`${!location.pathname.endsWith('settings') ? location.pathname.replace(/\/$/, '') + '/settings' : location.pathname}${location.search}`}
-          state={location.state}
-        >
-          {t('settings')}
-        </Link>
-        ] [<Link to={SEARCH_PATH}>{capitalize(t('search'))}</Link>] [<Link to='/'>{t('home')}</Link>]
-      </span>
+      {persistent ? (
+        <PageJump />
+      ) : (
+        <span className={styles.navTopRight}>
+          [
+          <Link
+            to={`${!location.pathname.endsWith('settings') ? location.pathname.replace(/\/$/, '') + '/settings' : location.pathname}${location.search}`}
+            state={location.state}
+          >
+            {t('settings')}
+          </Link>
+          ] [<Link to={SEARCH_PATH}>{capitalize(t('search'))}</Link>] [<Link to='/'>{t('home')}</Link>]
+        </span>
+      )}
     </PinnableBar>
   );
 });
@@ -401,13 +432,7 @@ const BoardsBarMobile = memo(({ communityAddress, pinnedOnDesktop, autoHide }: B
         <strong>{t('board')}</strong>
         {boardSelect}
       </div>
-      <div className={styles.pageJump}>
-        <Link to={`${location.pathname.replace(/\/$/, '') + '/settings'}${location.search}`} state={location.state}>
-          {t('settings')}
-        </Link>
-        <Link to={SEARCH_PATH}>{capitalize(t('search'))}</Link>
-        <Link to='/'>{t('home')}</Link>
-      </div>
+      <PageJump />
     </PinnableBar>
   );
 });

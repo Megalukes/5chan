@@ -5,14 +5,14 @@ const STORAGE_KEY = 'persistent-boards-bar-store';
 
 describe('usePersistentBoardsBarStore', () => {
   afterEach(() => {
-    usePersistentBoardsBarStore.setState({ persistentBoardsBar: false, traditionalBoardList: true, autoHideBoardsBar: false });
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: false, traditionalBoardList: false, autoHideBoardsBar: false });
     localStorage.removeItem(STORAGE_KEY);
   });
 
-  it('defaults to a static bar that uses the traditional board list without auto-hide', () => {
+  it("defaults to 4chan's navigation settings: static bar, board select when pinned, no auto-hide", () => {
     const state = usePersistentBoardsBarStore.getState();
     expect(state.persistentBoardsBar).toBe(false);
-    expect(state.traditionalBoardList).toBe(true);
+    expect(state.traditionalBoardList).toBe(false);
     expect(state.autoHideBoardsBar).toBe(false);
   });
 
@@ -24,10 +24,10 @@ describe('usePersistentBoardsBarStore', () => {
   });
 
   it('persists the board list and auto-hide options', () => {
-    usePersistentBoardsBarStore.getState().setTraditionalBoardList(false);
+    usePersistentBoardsBarStore.getState().setTraditionalBoardList(true);
     usePersistentBoardsBarStore.getState().setAutoHideBoardsBar(true);
 
-    expect(localStorage.getItem(STORAGE_KEY)).toContain('"traditionalBoardList":false');
+    expect(localStorage.getItem(STORAGE_KEY)).toContain('"traditionalBoardList":true');
     expect(localStorage.getItem(STORAGE_KEY)).toContain('"autoHideBoardsBar":true');
   });
 });

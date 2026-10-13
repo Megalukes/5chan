@@ -14,7 +14,8 @@ const usePersistentBoardsBarStore = create<PersistentBoardsBarState>()(
   persist(
     (set) => ({
       persistentBoardsBar: false,
-      traditionalBoardList: true,
+      // Off by default like 4chan, which pins a board select unless the traditional list is chosen.
+      traditionalBoardList: false,
       autoHideBoardsBar: false,
       setPersistentBoardsBar: (persistent) => set({ persistentBoardsBar: persistent }),
       setTraditionalBoardList: (traditional) => set({ traditionalBoardList: traditional }),

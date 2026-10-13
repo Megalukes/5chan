@@ -205,7 +205,7 @@ describe('BoardsBar', () => {
   afterEach(() => {
     act(() => root.unmount());
     container.remove();
-    usePersistentBoardsBarStore.setState({ persistentBoardsBar: false, traditionalBoardList: true, autoHideBoardsBar: false });
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: false, traditionalBoardList: false, autoHideBoardsBar: false });
   });
 
   it('renders desktop board groups and subscription links, then opens edit/create/directory actions', async () => {
@@ -242,7 +242,7 @@ describe('BoardsBar', () => {
   });
 
   it('makes only the persistable instance fixed when the persistent setting is on', async () => {
-    usePersistentBoardsBarStore.getState().setPersistentBoardsBar(true);
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: true });
     try {
       await act(async () => {
         root.render(createElement(MemoryRouter, { initialEntries: ['/mu'] }, createElement(BoardsBar, { persistable: true }), createElement(BoardsBar)));
@@ -257,7 +257,7 @@ describe('BoardsBar', () => {
   });
 
   it('keeps the pinned board list in view while scrolling when auto-hide is off', async () => {
-    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true });
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: true });
     await renderTopAndFooterBoardsBars();
 
     const pinnedBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"][class*="persistent"]');
@@ -268,8 +268,27 @@ describe('BoardsBar', () => {
     expect(pinnedBar?.style.transform).toBe('');
   });
 
+  it('swaps the pinned board list bracketed links for the page links', async () => {
+    const scrollToMock = vi.fn();
+    Object.defineProperty(window, 'scrollTo', { configurable: true, value: scrollToMock, writable: true });
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: true });
+    await renderTopAndFooterBoardsBars();
+
+    const pinnedBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"][class*="persistent"]');
+    const footerBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"]:not([class*="persistent"])');
+    expect(pinnedBar?.querySelector('[class*="navTopRight"]')).toBeNull();
+    expect(footerBar?.querySelector('[class*="navTopRight"]')).toBeTruthy();
+
+    await act(async () => {
+      pinnedBar?.querySelector<HTMLButtonElement>('button[aria-label="Bottom"]')?.click();
+    });
+
+    expect(scrollToMock).toHaveBeenCalledWith({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+    expect(pinnedBar?.textContent).toContain('settings');
+  });
+
   it('slides the pinned board list out while scrolling down when auto-hide is on', async () => {
-    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, autoHideBoardsBar: true });
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: true, autoHideBoardsBar: true });
     await renderTopAndFooterBoardsBars();
 
     const pinnedBar = container.querySelector<HTMLElement>('[class*="boardNavDesktop"][class*="persistent"]');
@@ -287,7 +306,7 @@ describe('BoardsBar', () => {
   });
 
   it('shows the pinned board list again when auto-hide is turned off and back on', async () => {
-    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, autoHideBoardsBar: true });
+    usePersistentBoardsBarStore.setState({ persistentBoardsBar: true, traditionalBoardList: true, autoHideBoardsBar: true });
     await renderTopAndFooterBoardsBars();
     await scrollWindowTo(100);
 
@@ -409,6 +428,7 @@ describe('BoardsBar', () => {
     });
 
     expect(testState.navigateMock).toHaveBeenCalledWith('/all/catalog');
+    expect(container.querySelector('[class*="boardNavMobile"] button[aria-label="Bottom"]')?.textContent).toBe('▼');
 
     const mobileNav = container.querySelector<HTMLElement>('[class*="boardNavMobile"]');
     expect(mobileNav?.style.transform).toBe('');

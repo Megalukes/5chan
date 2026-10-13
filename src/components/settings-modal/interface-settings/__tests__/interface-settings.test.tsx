@@ -207,7 +207,7 @@ describe('InterfaceSettings', () => {
 
     expect(usePersistentBoardsBarStore.getState().traditionalBoardList).toBe(false);
     expect(usePersistentBoardsBarStore.getState().autoHideBoardsBar).toBe(true);
-    usePersistentBoardsBarStore.setState({ traditionalBoardList: true, autoHideBoardsBar: false });
+    usePersistentBoardsBarStore.setState({ traditionalBoardList: false, autoHideBoardsBar: false });
   });
 
   it('toggles fit expanded images through the media store', async () => {
