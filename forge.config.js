@@ -4,6 +4,39 @@ import { downloadIpfsClients } from './electron/before-pack.js';
 // builds); local builds without the certificate stay unsigned and keep working.
 const shouldSignMac = process.platform === 'darwin' && !!process.env.APPLE_ID && !!process.env.APPLE_APP_SPECIFIC_PASSWORD && !!process.env.APPLE_TEAM_ID;
 
+// Package only the top-level entries the app loads at runtime. Anything else in the
+// checkout (docs, agent tooling, local caches, sockets like .codegraph/daemon.sock that
+// fail the copy with ERR_FS_CP_SOCKET) stays out of the bundle.
+const packagedRootEntries = new Set(['/package.json', '/LICENSE', '/electron', '/build', '/bin', '/node_modules']);
+
+// Files dropped inside the packaged entries. A function `ignore` replaces @electron/packager's
+// default ignores, so its node_modules/.bin, object file, node_gyp_bins and .git rules are repeated here.
+const ignoredPackagedPaths = [
+  // Build-time, signing, and test files that sit next to the Electron runtime code
+  /^\/electron\/(before-pack\.js|download-ipfs\.js|build-docker\.sh|entitlements\.plist|preload\.mjs|vite-config\.js|vite\.preload\.config\.js)$/,
+  /^\/electron\/.*\.test\.js$/,
+  /\.map$/,
+  /\.md$/,
+  /\.ts$/,
+  /tsconfig\.json$/,
+  /\.env$/,
+  /\.DS_Store$/,
+  /yarn\.lock$/,
+  // .bin directories contain symlinks that escape the app directory
+  /^\/node_modules\/(.*\/)?\.bin($|\/)/,
+  /^\/node_modules\/\.cache($|\/)/,
+  /\.o(bj)?$/,
+  /\/node_gyp_bins($|\/)/,
+  /\/\.git($|\/)/,
+];
+
+const shouldIgnorePackagePath = (file) => {
+  // The packager also filters the app root itself, as an empty path.
+  if (!file) return false;
+  const rootEntry = file.match(/^\/[^/]+/)?.[0];
+  return !packagedRootEntries.has(rootEntry) || ignoredPackagedPaths.some((pattern) => pattern.test(file));
+};
+
 const config = {
   packagerConfig: {
     name: '5chan',
@@ -18,39 +51,7 @@ const config = {
       unpackDir: 'bin/**/*',
     },
 
-    // Exclude unnecessary files from the package
-    ignore: [
-      /^\/src$/,
-      /^\/public$/,
-      /^\/android$/,
-      /^\/\.github$/,
-      /^\/scripts$/,
-      /^\/\.git/,
-      /^\/\.pkc$/,
-      // Local codegraph index; its live daemon.sock makes the packager's copy fail with ERR_FS_CP_SOCKET.
-      /^\/\.codegraph$/,
-      /^\/out$/,
-      /^\/dist$/,
-      /^\/squashfs-root$/,
-      /\.map$/,
-      /\.md$/,
-      /\.ts$/,
-      /tsconfig\.json$/,
-      /\.oxfmtrc/,
-      /oxlintrc/,
-      /vite\.config/,
-      /forge\.config/,
-      /capacitor\.config/,
-      /\.env$/,
-      /\.DS_Store$/,
-      /yarn\.lock$/,
-      // Exclude build-time scripts from the package
-      /electron\/before-pack\.js/,
-      // Exclude .bin directories anywhere in node_modules (contain escaping symlinks)
-      /node_modules\/.*\/\.bin/,
-      /node_modules\/\.bin/,
-      /node_modules\/\.cache/,
-    ],
+    ignore: shouldIgnorePackagePath,
 
     ...(shouldSignMac && {
       osxSign: {
