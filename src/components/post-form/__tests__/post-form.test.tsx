@@ -36,11 +36,11 @@ const testState = vi.hoisted(() => ({
   >,
   editedComment: undefined as { commentModeration?: { archived?: boolean }; deleted?: boolean; locked?: boolean; postCid?: string; removed?: boolean } | undefined,
   gifFrameStatus: 'idle' as 'idle' | 'ready',
-  handleUploadMock: vi.fn(),
-  uploadFileMock: vi.fn(),
+  chooseFileMock: vi.fn(),
+  uploadAttachmentMock: vi.fn(),
   isOffline: false,
   isOnlineStatusLoading: false,
-  isUploading: false,
+  uploadPhase: null as 'uploading' | 'checking' | null,
   isResolvingExternalQuotes: false,
   mediaHostingRuntime: 'web' as 'web' | 'android' | 'electron',
   mediaLinkLoadMock: vi.fn<(link: string) => Promise<boolean>>(),
@@ -66,13 +66,12 @@ const testState = vi.hoisted(() => ({
   setAccountMock: vi.fn(),
   setPublishPostOptionsMock: vi.fn(),
   setPublishReplyOptionsMock: vi.fn(),
+  showLinkField: false,
   showUploadControls: true,
   communities: {
     'music-posting.eth': { address: 'music-posting.eth' },
   } as Record<string, unknown>,
-  uploadComplete: undefined as ((uploadedUrl: string) => void) | undefined,
   uploadMode: 'always',
-  uploadedFileName: 'picked.png' as string | null,
 }));
 
 vi.mock('react-i18next', async () => {
@@ -345,15 +344,12 @@ vi.mock('../../../hooks/use-publish-reply', async () => {
 });
 
 vi.mock('../../../hooks/use-file-upload', () => ({
-  useFileUpload: ({ onUploadComplete }: { onUploadComplete: (uploadedUrl: string) => void }) => {
-    testState.uploadComplete = onUploadComplete;
-    return {
-      handleUpload: testState.handleUploadMock,
-      uploadFile: testState.uploadFileMock,
-      isUploading: testState.isUploading,
-      uploadedFileName: testState.uploadedFileName,
-    };
-  },
+  useFileUpload: () => ({
+    chooseFile: testState.chooseFileMock,
+    uploadAttachment: testState.uploadAttachmentMock,
+    isUploading: testState.uploadPhase !== null,
+    uploadPhase: testState.uploadPhase,
+  }),
 }));
 
 vi.mock('../../loading-ellipsis/loading-ellipsis', () => ({
@@ -445,9 +441,11 @@ vi.mock('../../../lib/media-hosting/show-upload-controls', () => ({
 }));
 
 vi.mock('../../../stores/use-media-hosting-store', () => ({
-  default: (selector: (state: { uploadMode: string }) => unknown) =>
+  default: (selector: (state: { uploadMode: string; preferredProvider: string; showLinkField: boolean }) => unknown) =>
     selector({
       uploadMode: testState.uploadMode,
+      preferredProvider: 'forge',
+      showLinkField: testState.showLinkField,
     }),
 }));
 
@@ -617,7 +615,7 @@ describe('PostForm', () => {
     testState.gifFrameStatus = 'idle';
     testState.isOffline = false;
     testState.isOnlineStatusLoading = false;
-    testState.isUploading = false;
+    testState.uploadPhase = null;
     testState.isResolvingExternalQuotes = false;
     testState.mediaHostingRuntime = 'web';
     testState.mediaLinkLoadMock.mockReset();
@@ -636,16 +634,16 @@ describe('PostForm', () => {
     testState.replyIndex = undefined;
     testState.resolvedCommunityAddress = undefined;
     testState.rolesByCommunity = {};
+    testState.showLinkField = false;
     testState.showUploadControls = true;
-    testState.uploadComplete = undefined;
     testState.uploadMode = 'always';
-    testState.uploadedFileName = 'picked.png';
     testState.communities = {
       'music-posting.eth': { address: 'music-posting.eth' },
       'traditional-games.bso': { address: 'traditional-games.bso' },
     };
-    testState.handleUploadMock.mockReset();
-    testState.uploadFileMock.mockReset();
+    testState.chooseFileMock.mockReset();
+    testState.chooseFileMock.mockResolvedValue(null);
+    testState.uploadAttachmentMock.mockReset();
     testState.navigateMock.mockReset();
     testState.publishPostMock.mockReset();
     testState.publishReplyMock.mockReset();
@@ -709,7 +707,7 @@ describe('PostForm', () => {
     expect(table).toBeTruthy();
 
     await clickByText(table as HTMLTableElement, 'choose_file');
-    expect(testState.handleUploadMock).toHaveBeenCalledTimes(1);
+    expect(testState.chooseFileMock).toHaveBeenCalledTimes(1);
 
     await clickByText(table as HTMLTableElement, 'post');
     expect(globalThis.alert).not.toHaveBeenCalled();
@@ -1192,6 +1190,29 @@ describe('PostForm', () => {
     await clickByText(container, 'start_new_thread');
 
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent === 'Draw')).toBe(false);
+  });
+
+  it('keeps the link to file field visible for Tegaki on web, where drawings are pasted as links', async () => {
+    testState.uploadMode = 'random';
+    testState.directories.push({
+      address: 'oekaki-posting.bso',
+      directoryCode: 'i',
+      features: { requirePostLink: true, requirePostLinkIsMedia: true },
+      title: '/i/ - Oekaki',
+    });
+    testState.communities['oekaki-posting.bso'] = { address: 'oekaki-posting.bso' };
+    testState.resolvedCommunityAddress = 'oekaki-posting.bso';
+
+    await renderPostForm('/i');
+    await clickByText(container, 'start_new_thread');
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="link_to_file"]')?.closest('tr')?.hidden).toBe(false);
+
+    act(() => root.unmount());
+    root = createRoot(container);
+    testState.mediaHostingRuntime = 'electron';
+    await renderPostForm('/i');
+    await clickByText(container, 'start_new_thread');
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="link_to_file"]')?.closest('tr')?.hidden).toBe(true);
   });
 
   it('restores each location post form visibility and draft after navigation', async () => {
@@ -1737,9 +1758,223 @@ describe('PostForm', () => {
     expect(container.textContent).toContain('warning: posting as 5chan dev');
   });
 
-  it('shows the pasted file-link filename next to the upload button', async () => {
-    testState.uploadedFileName = null;
+  it('only uploads a chosen file once the post is submitted, then publishes its link', async () => {
+    const file = new File(['png'], 'chosen.png', { type: 'image/png' });
+    const attachment = { kind: 'file', file, name: 'chosen.png', mimeType: 'image/png' };
+    testState.uploadMode = 'random';
+    testState.directories[0] = { address: 'music-posting.eth', features: { requirePostLinkIsMedia: true }, title: '/mu/ - Music' };
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+    testState.chooseFileMock.mockResolvedValue(attachment);
+    testState.uploadAttachmentMock.mockImplementation(async () => {
+      expect(testState.publishPostMock).not.toHaveBeenCalled();
+      return { url: 'https://forgeimg.net/abc/uploaded.png', fileName: 'chosen.png' };
+    });
 
+    await renderPostForm('/mu');
+    await clickByText(container, 'start_new_thread');
+
+    const table = container.querySelector('table') as HTMLTableElement;
+    const linkInput = table.querySelector<HTMLInputElement>('input[aria-label="link_to_file"]') as HTMLInputElement;
+    expect(linkInput.closest('tr')?.hidden).toBe(true);
+
+    await clickByText(table, 'choose_file');
+    expect(table.textContent).toContain('chosen.png');
+    expect(testState.uploadAttachmentMock).not.toHaveBeenCalled();
+
+    await dispatchInput(table.querySelector('textarea') as HTMLTextAreaElement, 'uploaded body');
+    await clickByText(table, 'post');
+
+    expect(testState.uploadAttachmentMock).toHaveBeenCalledWith(attachment);
+    expect(testState.publishPostMock).toHaveBeenCalledTimes(1);
+    expect(testState.publishedPostOptions?.link).toBe('https://forgeimg.net/abc/uploaded.png');
+    expect(linkInput.value).toBe('https://forgeimg.net/abc/uploaded.png');
+  });
+
+  it('clears a visible link field when a file is attached, and a typed link replaces the file', async () => {
+    const file = new File(['png'], 'chosen.png', { type: 'image/png' });
+    testState.uploadMode = 'random';
+    testState.showLinkField = true;
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+    testState.chooseFileMock.mockResolvedValue({ kind: 'file', file, name: 'chosen.png', mimeType: 'image/png' });
+
+    await renderPostForm('/mu');
+    await clickByText(container, 'start_new_thread');
+
+    const table = container.querySelector('table') as HTMLTableElement;
+    // /mu has no media-only link rule, so the field is labelled as a plain link.
+    const linkInput = table.querySelector<HTMLInputElement>('input[aria-label="link"]') as HTMLInputElement;
+    await dispatchInput(linkInput, 'https://example.com/typed.png');
+    await clickByText(table, 'choose_file');
+
+    expect(linkInput.disabled).toBe(false);
+    expect(linkInput.value).toBe('');
+    expect(testState.setPublishPostOptionsMock).toHaveBeenLastCalledWith({ link: '' });
+
+    // After a failed upload the revealed field must still work as the fallback.
+    await dispatchInput(linkInput, 'https://example.com/fallback.png');
+    expect(table.textContent).not.toContain('chosen.png');
+
+    await dispatchInput(table.querySelector('textarea') as HTMLTextAreaElement, 'fallback body');
+    await clickByText(table, 'post');
+    expect(testState.uploadAttachmentMock).not.toHaveBeenCalled();
+    expect(testState.publishedPostOptions?.link).toBe('https://example.com/fallback.png');
+  });
+
+  it('replaces the attached file when another one is chosen', async () => {
+    const first = { kind: 'file', file: new File(['png'], 'chosen.png', { type: 'image/png' }), name: 'chosen.png', mimeType: 'image/png' };
+    const second = { kind: 'file', file: new File(['gif'], 'second.gif', { type: 'image/gif' }), name: 'second.gif', mimeType: 'image/gif' };
+    testState.uploadMode = 'random';
+    testState.chooseFileMock.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+    testState.uploadAttachmentMock.mockResolvedValue({ url: 'https://forgeimg.net/abc/second.gif', fileName: 'second.gif' });
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+
+    await renderPostForm('/mu');
+    await clickByText(container, 'start_new_thread');
+    const table = container.querySelector('table') as HTMLTableElement;
+    await clickByText(table, 'choose_file');
+    await clickByText(table, 'choose_file');
+
+    expect(table.textContent).toContain('second.gif');
+    expect(table.textContent).not.toContain('chosen.png');
+    expect(table.querySelector('button[aria-label="remove"]')).toBeNull();
+
+    await clickByText(table, 'post');
+    expect(testState.uploadAttachmentMock).toHaveBeenCalledTimes(1);
+    expect(testState.uploadAttachmentMock).toHaveBeenCalledWith(second);
+  });
+
+  it('keeps the attachment and does not publish when its upload fails', async () => {
+    const file = new File(['png'], 'chosen.png', { type: 'image/png' });
+    const attachment = { kind: 'file', file, name: 'chosen.png', mimeType: 'image/png' };
+    testState.uploadMode = 'random';
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+    testState.chooseFileMock.mockResolvedValue(attachment);
+    testState.uploadAttachmentMock.mockResolvedValue(null);
+
+    await renderPostForm('/mu');
+    await clickByText(container, 'start_new_thread');
+    const table = container.querySelector('table') as HTMLTableElement;
+    await clickByText(table, 'choose_file');
+    await clickByText(table, 'post');
+
+    expect(testState.uploadAttachmentMock).toHaveBeenCalledTimes(1);
+    expect(testState.publishPostMock).not.toHaveBeenCalled();
+    expect(table.textContent).toContain('chosen.png');
+  });
+
+  it('does not publish an upload that finishes after the form closed', async () => {
+    const file = new File(['png'], 'chosen.png', { type: 'image/png' });
+    let finishUpload: (value: { url: string; fileName: string }) => void = () => undefined;
+    testState.uploadMode = 'random';
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+    testState.chooseFileMock.mockResolvedValue({ kind: 'file', file, name: 'chosen.png', mimeType: 'image/png' });
+    testState.uploadAttachmentMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finishUpload = resolve;
+        }),
+    );
+
+    await renderPostForm('/mu');
+    await clickByText(container, 'start_new_thread');
+    const table = container.querySelector('table') as HTMLTableElement;
+    await clickByText(table, 'choose_file');
+    await clickByText(table, 'post');
+    // Navigating away unmounts the form while the upload is still running.
+    act(() => root.unmount());
+    root = createRoot(container);
+
+    testState.setPublishPostOptionsMock.mockClear();
+    await act(async () => {
+      finishUpload({ url: 'https://forgeimg.net/abc/late.png', fileName: 'chosen.png' });
+    });
+
+    expect(testState.publishPostMock).not.toHaveBeenCalled();
+    expect(testState.setPublishPostOptionsMock).not.toHaveBeenCalled();
+  });
+
+  it('locks the form fields while the attachment uploads', async () => {
+    testState.uploadPhase = 'uploading';
+
+    await renderPostForm('/all');
+    await clickByText(container, 'start_new_thread');
+
+    const fieldset = container.querySelector('fieldset') as HTMLFieldSetElement;
+    expect(fieldset.disabled).toBe(true);
+    expect(fieldset.contains(container.querySelector('textarea'))).toBe(true);
+    expect(container.querySelector('textarea')?.matches(':disabled')).toBe(true);
+  });
+
+  it('ignores an attachment once uploads are turned off', async () => {
+    const file = new File(['png'], 'chosen.png', { type: 'image/png' });
+    testState.uploadMode = 'random';
+    testState.chooseFileMock.mockResolvedValue({ kind: 'file', file, name: 'chosen.png', mimeType: 'image/png' });
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+    await renderPostForm('/mu');
+    await clickByText(container, 'start_new_thread');
+    await clickByText(container.querySelector('table') as HTMLTableElement, 'choose_file');
+
+    testState.uploadMode = 'none';
+    testState.showUploadControls = false;
+    act(() => root.unmount());
+    root = createRoot(container);
+    await renderPostForm('/mu');
+
+    const table = container.querySelector('table') as HTMLTableElement;
+    expect(table.textContent).not.toContain('chosen.png');
+    expect(Array.from(table.querySelectorAll('button')).some((button) => button.textContent === 'choose_file')).toBe(false);
+    expect(table.querySelector<HTMLInputElement>('input[aria-label="link"]')?.disabled).toBe(false);
+
+    await dispatchInput(table.querySelector('textarea') as HTMLTextAreaElement, 'text only');
+    await clickByText(table, 'post');
+    expect(testState.uploadAttachmentMock).not.toHaveBeenCalled();
+    expect(testState.publishPostMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('validates the post before uploading the attached file', async () => {
+    const file = new File(['FWS'], 'movie.swf', { type: 'application/x-shockwave-flash' });
+    testState.uploadMode = 'random';
+    testState.chooseFileMock.mockResolvedValue({ kind: 'file', file, name: 'movie.swf', mimeType: 'application/x-shockwave-flash' });
+
+    await renderPostForm('/all');
+    await clickByText(container, 'start_new_thread');
+    const table = container.querySelector('table') as HTMLTableElement;
+    await clickByText(table, 'choose_file');
+    await clickByText(table, 'post');
+
+    expect(container.textContent).toContain('error: link_not_image_or_video_alert');
+    expect(testState.uploadAttachmentMock).not.toHaveBeenCalled();
+    expect(testState.publishPostMock).not.toHaveBeenCalled();
+  });
+
+  it('shows the link to file field when the setting is on or no upload provider is enabled', async () => {
+    testState.uploadMode = 'random';
+    testState.showLinkField = true;
+    await renderPostForm('/all');
+    await clickByText(container, 'start_new_thread');
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="link_to_file"]')?.closest('tr')?.hidden).toBe(false);
+
+    act(() => root.unmount());
+    root = createRoot(container);
+    testState.showLinkField = false;
+    testState.uploadMode = 'none';
+    testState.showUploadControls = false;
+    await renderPostForm('/all');
+    await clickByText(container, 'start_new_thread');
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="link_to_file"]')?.closest('tr')?.hidden).toBe(false);
+  });
+
+  it('keeps a plain link field visible on boards that accept any link', async () => {
+    testState.uploadMode = 'random';
+    testState.resolvedCommunityAddress = 'flash-posting.bso';
+
+    await renderPostForm('/f');
+    await clickByText(container, 'start_new_thread');
+
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="link"]')?.closest('tr')?.hidden).toBe(false);
+  });
+
+  it('shows the pasted file-link filename next to the upload button', async () => {
     await renderPostForm('/all');
     await clickByText(container, 'start_new_thread');
 
@@ -1755,8 +1990,6 @@ describe('PostForm', () => {
   });
 
   it('does not show a pasted non-file path segment next to the upload button', async () => {
-    testState.uploadedFileName = null;
-
     await renderPostForm('/all');
     await clickByText(container, 'start_new_thread');
 
@@ -1834,8 +2067,6 @@ describe('PostForm', () => {
   });
 
   it('shortens long pasted file-link filenames next to the upload button', async () => {
-    testState.uploadedFileName = null;
-
     await renderPostForm('/all');
     await clickByText(container, 'start_new_thread');
 
@@ -1851,12 +2082,21 @@ describe('PostForm', () => {
   });
 
   it('uses the shared loading ellipsis while a post form upload is running', async () => {
-    testState.isUploading = true;
+    testState.uploadPhase = 'uploading';
 
     await renderPostForm('/all');
     await clickByText(container, 'start_new_thread');
 
     expect(container.querySelector('[data-testid="loading-ellipsis"]')?.textContent).toBe('uploading');
+  });
+
+  it('says the host is running automated checks once the file has been sent', async () => {
+    testState.uploadPhase = 'checking';
+
+    await renderPostForm('/all');
+    await clickByText(container, 'start_new_thread');
+
+    expect(container.querySelector('[data-testid="loading-ellipsis"]')?.textContent).toBe('running_automated_checks');
   });
 
   it('redirects to the pending route when a post publish index is already available on mount', async () => {
@@ -2208,6 +2448,26 @@ describe('PostForm', () => {
     await clickByText(table as HTMLTableElement, 'post');
 
     expect(testState.publishReplyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('uploads an attached file only when the inline reply is submitted', async () => {
+    const file = new File(['png'], 'reply.png', { type: 'image/png' });
+    const attachment = { kind: 'file', file, name: 'reply.png', mimeType: 'image/png' };
+    testState.comments = { 'thread-cid': { postCid: 'thread-cid' } };
+    testState.resolvedCommunityAddress = 'music-posting.eth';
+    testState.chooseFileMock.mockResolvedValue(attachment);
+    testState.uploadAttachmentMock.mockResolvedValue({ url: 'https://forgeimg.net/abc/reply.png', fileName: 'reply.png' });
+
+    await renderPostForm('/mu/thread/thread-cid');
+    await clickByText(container, 'post_a_reply');
+    const table = container.querySelector('table') as HTMLTableElement;
+    await clickByText(table, 'choose_file');
+    expect(testState.uploadAttachmentMock).not.toHaveBeenCalled();
+
+    await clickByText(table, 'post');
+
+    expect(testState.uploadAttachmentMock).toHaveBeenCalledWith(attachment);
+    expect(testState.publishReplyMock).toHaveBeenCalledWith(expect.objectContaining({ link: 'https://forgeimg.net/abc/reply.png' }));
   });
 
   it('does not require an inline reply link when only post links are required', async () => {
