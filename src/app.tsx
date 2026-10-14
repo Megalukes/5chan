@@ -4,7 +4,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAccount, useAccountComment, useCommunity } from '@bitsocial/bitsocial-react-hooks';
 import { initSnow, removeSnow } from './lib/snow';
 import { isAllView, isCatalogView, isModView, isSubscriptionsView } from './lib/utils/view-utils';
-import { preloadThemeAssets, scheduleIdlePreload } from './lib/utils/preload-utils';
+import { preloadThemeAssets, preloadUiIcons, scheduleIdlePreload } from './lib/utils/preload-utils';
 import { hasModQueueAccessRole } from './lib/utils/mod-access';
 import useReplyModalStore from './stores/use-reply-modal-store';
 import useCreateBoardModalStore from './stores/use-create-board-modal-store';
@@ -110,12 +110,13 @@ const SearchDirectory = lazyView(secondaryViewLoaders.searchDirectory);
 // Preload all theme assets (buttons, backgrounds) immediately on app load
 // to prevent visible loading delays when switching themes
 preloadThemeAssets();
-// Warm the reply modal, settings modal, and secondary view chunks so the first "No." click or
-// navigation does not wait for a lazy import (routes render without transitions).
+// Warm the reply modal, settings modal, and secondary view chunks, and the icons they use, so the
+// first "No." click or navigation does not wait for a lazy import (routes render without transitions).
 const preloadLazyChunks = () => {
   void loadReplyModal();
   void loadSettingsModal();
   Object.values(secondaryViewLoaders).forEach((load) => void load());
+  preloadUiIcons();
 };
 
 const getPostFormRouteKeyPath = (pathname: string) => pathname.replace(/\/settings$/, '').replace(/\/$/, '');

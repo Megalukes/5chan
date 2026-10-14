@@ -1,10 +1,20 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
-import { BANNER_PLACEHOLDER, STATIC_SHELL_ATTRIBUTE, assembleBoardFrame, buildBoardFrames, injectStaticShell, injectThemeScript, inlineStartupStylesheets, runRenderScript } from '../vite-static-shell.mjs';
+import {
+  BANNER_PLACEHOLDER,
+  STATIC_SHELL_ATTRIBUTE,
+  assembleBoardFrame,
+  buildBoardFrames,
+  injectStaticShell,
+  injectThemeScript,
+  inlineStartupStylesheets,
+  runRenderScript,
+} from '../vite-static-shell.mjs';
 
 const ATTRIBUTE = 'data-fivechan-app-preload';
 
@@ -29,6 +39,22 @@ test('inlines startup stylesheets in place and keeps a disabled link for the run
     ].join(''),
   );
   assert.throws(() => inlineStartupStylesheets(html, ATTRIBUTE, './', () => '</style><script>'), /cannot be inlined/);
+});
+
+// Inlining puts the theme variables in index.html while lazy stylesheets in assets/ still read them.
+// Chromium resolves an unregistered custom property's relative url() against the reading stylesheet
+// (the settings modal requested assets/assets/buttons/...); a <url> registration resolves it where
+// it is declared.
+test('registers every custom property holding a url() as <url> so it resolves where it is declared', async () => {
+  const srcDirectory = fileURLToPath(new URL('../../src/', import.meta.url));
+  const cssFiles = (await readdir(srcDirectory, { recursive: true })).filter((file) => file.endsWith('.css'));
+  const css = (await Promise.all(cssFiles.map((file) => readFile(path.join(srcDirectory, file), 'utf8')))).join('\n');
+  const urlProperties = new Set([...css.matchAll(/(--[\w-]+)\s*:[^;{}]*\burl\(/g)].map((match) => match[1]));
+  const syntaxes = new Map([...css.matchAll(/@property\s+(--[\w-]+)\s*\{[^}]*\bsyntax:\s*["']([^"']+)["']/g)].map((match) => [match[1], match[2]]));
+  assert.ok(urlProperties.has('--settings-modal-show-button-background-image'));
+  for (const name of urlProperties) {
+    assert.match(syntaxes.get(name) ?? '', /^<url>(\s*\||$)/, `${name} holds a url() but is not registered with @property { syntax: "<url> | ..." }`);
+  }
 });
 
 // A board frame as the build renders it: code links, a board select, the banner (desktop only), the
@@ -116,7 +142,8 @@ const load = ({ hash = '', storage = {}, globals = {}, width = 1280, date, histo
 test('applies the theme React applies on its first commit', () => {
   assert.equal(load().bodyClass, 'yotsuba');
   assert.equal(load({ hash: '#/rules' }).bodyClass, 'yotsuba');
-  for (const hash of ['#/faq', '#/faq/', '#/directory/settings', '#/not-found', '#/subs/unknown', '#/search/unknown']) assert.equal(load({ hash }).bodyClass, 'yotsuba', hash);
+  for (const hash of ['#/faq', '#/faq/', '#/directory/settings', '#/not-found', '#/subs/unknown', '#/search/unknown'])
+    assert.equal(load({ hash }).bodyClass, 'yotsuba', hash);
   // Other paths under a static page's name are board routes to React Router.
   for (const hash of ['#/faq/2', '#/pass/settings', '#/pending', '#/settings']) assert.equal(load({ hash }).bodyClass, 'yotsuba-b', hash);
   assert.equal(load({ hash: '#/biz' }).bodyClass, 'yotsuba-b');
@@ -131,7 +158,8 @@ test('applies the theme React applies on its first commit', () => {
   assert.equal(load({ hash: '#/random-nsfw.bso' }).bodyClass, 'yotsuba');
   assert.equal(load({ hash: '#/unknown.bso' }).bodyClass, 'yotsuba-b');
   assert.equal(load({ hash: '#/pending/0', historyState: { usr: { pendingPost: { communityAddress: 'random-nsfw.bso' } } } }).bodyClass, 'yotsuba');
-  for (const hash of ['#/all', '#/subs', '#/subs/catalog/settings', '#/mod', '#/mod/queue', '#/search/', '#/search/catalog']) assert.equal(load({ hash }).bodyClass, 'yotsuba', hash);
+  for (const hash of ['#/all', '#/subs', '#/subs/catalog/settings', '#/mod', '#/mod/queue', '#/search/', '#/search/catalog'])
+    assert.equal(load({ hash }).bodyClass, 'yotsuba', hash);
   const themes = '{"nsfw":"tomorrow","sfw":"burichan"}';
   assert.equal(load({ hash: '#/all', storage: { '5chan-themes': themes } }).bodyClass, 'tomorrow');
   assert.equal(load({ hash: '#/biz', storage: { '5chan-themes': themes } }).bodyClass, 'burichan');

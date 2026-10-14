@@ -130,6 +130,7 @@ vi.mock('../lib/snow', () => ({
 
 vi.mock('../lib/utils/preload-utils', () => ({
   preloadThemeAssets: vi.fn(),
+  preloadUiIcons: vi.fn(),
   resolveAssetUrl: (path: string) => path,
   scheduleIdlePreload: vi.fn(),
 }));

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { copyToClipboard } from '../clipboard-utils';
 import { hashStringToColor, getTextColorForBackground, removeMarkdown } from '../post-utils';
-import { preloadThemeAssets, resolveAssetUrl, scheduleIdlePreload } from '../preload-utils';
+import { preloadThemeAssets, preloadUiIcons, resolveAssetUrl, scheduleIdlePreload } from '../preload-utils';
 import {
   computeOmittedCount,
   filterRepliesForDisplay,
@@ -31,6 +31,7 @@ vi.mock('i18next', () => ({
 vi.mock('../../../generated/asset-manifest', () => ({
   THEME_BUTTON_IMAGES: ['buttons/default.png', 'buttons/hover.png'],
   THEME_BACKGROUND_IMAGES: ['backgrounds/wallpaper.png'],
+  UI_ICON_IMAGES: ['icons/flags.png'],
 }));
 
 describe('misc utils', () => {
@@ -125,11 +126,13 @@ describe('misc utils', () => {
     });
 
     preloadThemeAssets();
+    preloadUiIcons();
 
     expect(loadedSources).toEqual([
       `${import.meta.env.BASE_URL}buttons/default.png`,
       `${import.meta.env.BASE_URL}buttons/hover.png`,
       `${import.meta.env.BASE_URL}backgrounds/wallpaper.png`,
+      `${import.meta.env.BASE_URL}icons/flags.png`,
     ]);
   });
 

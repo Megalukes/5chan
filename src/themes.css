@@ -1,3 +1,74 @@
+/* Theme image variables are read both by the startup styles the static shell inlines into index.html
+   and by lazy-loaded stylesheets in assets/. Chromium resolves a relative url() in an unregistered
+   custom property against the stylesheet that reads it, so the lazy modals requested
+   assets/assets/buttons/... and showed no buttons. Registering the variables as <url> resolves each
+   url() against the stylesheet that declares it. <url> must come first: <image> leaves it relative. */
+@property --body-background-pattern-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --button-background-image-mobile {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --close-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --directory-modal-close-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --disclaimer-modal-close-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --open-help-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --post-hide-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --post-unhide-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --settings-modal-close-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --settings-modal-hide-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
+@property --settings-modal-show-button-background-image {
+  syntax: '<url> | <image> | none';
+  inherits: true;
+  initial-value: none;
+}
+
 /* 4chan Frames header/control palettes, shared by the warm and cool serif themes. */
 :root .yotsuba,
 :root .futaba {

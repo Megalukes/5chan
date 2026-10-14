@@ -28,6 +28,12 @@ const buttonImages = readdirSync(buttonsDir)
 // Theme background images
 const themeBackgrounds = ['assets/background-fade.png', 'assets/background-fade-blue.png'];
 
+// UI icons (status, role, offline and flag sprites), some only referenced by lazily loaded views
+const iconsDir = join(publicDir, 'assets', 'icons');
+const uiIcons = readdirSync(iconsDir)
+  .filter((file) => /\.(jpg|jpeg|gif|png)$/i.test(file))
+  .map((file) => `assets/icons/${file}`);
+
 // Generate TypeScript file with proper formatting (matches prettier config)
 const formatArray = (arr) => {
   if (arr.length === 0) return '[]';
@@ -48,6 +54,9 @@ export const THEME_BUTTON_IMAGES = ${formatArray(buttonImages)} as const;
 
 // Theme background pattern images
 export const THEME_BACKGROUND_IMAGES = ${formatArray(themeBackgrounds)} as const;
+
+// UI icons (status, role, offline and flag sprites)
+export const UI_ICON_IMAGES = ${formatArray(uiIcons)} as const;
 `;
 
 // Ensure directory exists
@@ -65,5 +74,5 @@ try {
 }
 
 console.log(
-  `✅ Generated asset manifest with ${banners.length} banners, ${notFoundImages.length} not-found images, ${buttonImages.length} button images, and ${themeBackgrounds.length} background images`,
+  `✅ Generated asset manifest with ${banners.length} banners, ${notFoundImages.length} not-found images, ${buttonImages.length} button images, ${themeBackgrounds.length} background images, and ${uiIcons.length} UI icons`,
 );

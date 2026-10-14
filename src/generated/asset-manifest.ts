@@ -40,3 +40,16 @@ export const THEME_BUTTON_IMAGES = [
 
 // Theme background pattern images
 export const THEME_BACKGROUND_IMAGES = ['assets/background-fade.png', 'assets/background-fade-blue.png'] as const;
+
+// UI icons (status, role, offline and flag sprites)
+export const UI_ICON_IMAGES = [
+  'assets/icons/archived.gif',
+  'assets/icons/board-admin.png',
+  'assets/icons/board-mod.png',
+  'assets/icons/closed.gif',
+  'assets/icons/flags-1.png',
+  'assets/icons/flags-2.png',
+  'assets/icons/flags-pony.png',
+  'assets/icons/offline-red.png',
+  'assets/icons/sticky.gif',
+] as const;
