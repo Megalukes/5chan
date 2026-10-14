@@ -98,6 +98,22 @@ describe('BoardReachabilityAlert', () => {
     expect(getNodeReachability).not.toHaveBeenCalled();
   });
 
+  it('does not check another full node on this machine, only the RPC the desktop app serves', async () => {
+    testState.rpcUrls = ['ws://127.0.0.1:9238/secret'];
+    await render('hosted-board');
+
+    expect(container.textContent).toBe('');
+    expect(getNodeReachability).not.toHaveBeenCalled();
+  });
+
+  it.each(['ws://127.0.0.1:9138', 'ws://[::1]:9138'])('checks the desktop app RPC at %s', async (rpcUrl) => {
+    testState.rpcUrls = [rpcUrl];
+    await render('hosted-board');
+
+    expect(getNodeReachability).toHaveBeenCalledTimes(1);
+    expect(container.textContent).toBe('board_unreachable_from_browsers');
+  });
+
   it('does nothing outside the desktop app', async () => {
     window.electronApi = undefined;
     await render('hosted-board');
