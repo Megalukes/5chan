@@ -27,6 +27,8 @@ const config = {
       /^\/scripts$/,
       /^\/\.git/,
       /^\/\.pkc$/,
+      // Local codegraph index; its live daemon.sock makes the packager's copy fail with ERR_FS_CP_SOCKET.
+      /^\/\.codegraph$/,
       /^\/out$/,
       /^\/dist$/,
       /^\/squashfs-root$/,
