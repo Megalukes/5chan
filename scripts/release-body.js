@@ -103,7 +103,7 @@ const downloads = [macSection, winSection, linuxSection, androidSection, htmlSec
 
 // One-liner summary of what changed in this release. Update before each release.
 const oneLinerDescription =
-  'This version restores thread bumping so active threads rise to the top again, lists matching boards above post results when you search, adds the /oc/ Original Content board directory, speeds up first load, and fixes quote link previews on boards you have already visited.';
+  'This version adds media uploads to the web app, so you can attach images and videos straight from your browser, plus board creation and board settings in the app, directory voting, a 4chan-style thread auto-updater with unread markers and tab alerts, pinned catalog threads, a desktop board sidebar and boards bar options, Vimeo embeds, and a faster startup.';
 
 const releaseBody = `${oneLinerDescription}
 

@@ -1,3 +1,101 @@
+# [0.10.0](https://github.com/bitsocialnet/5chan/compare/v0.9.21...v0.10.0) (2026-10-15)
+
+
+### Bug Fixes
+
+* **archive:** style load more as a standard board button ([4818663](https://github.com/bitsocialnet/5chan/commit/48186638cdfc5fdb3854092efade9f10a8801460))
+* **archive:** truncate long row excerpts to 100 characters ([aa67063](https://github.com/bitsocialnet/5chan/commit/aa67063d598f90439fcf4b97f6834e733836dd7a))
+* **bans:** name the board in the ban label instead of blaming the post ([3b66dff](https://github.com/bitsocialnet/5chan/commit/3b66dff5d1653f5712cc7d3480163f7551c949b4)), closes [pkcprotocol/pkc-js#363](https://github.com/pkcprotocol/pkc-js/issues/363)
+* **board:** keep showing failed while an unreachable board retries ([#1225](https://github.com/bitsocialnet/5chan/issues/1225)) ([6d2e44a](https://github.com/bitsocialnet/5chan/commit/6d2e44a3d29ef4bddd75aa8badfbab6bada3e307)), closes [#663](https://github.com/bitsocialnet/5chan/issues/663)
+* **board:** keep the page footer reachable at the bottom of /all ([b5e00d7](https://github.com/bitsocialnet/5chan/commit/b5e00d73f8195e053c8a9360b74e1e8454ff6e4c))
+* **boards-bar:** pin only the top boards bar and respect the frames sidebar ([42c9806](https://github.com/bitsocialnet/5chan/commit/42c98066735e5a3f52563240cd78c29d732bbbeb))
+* **boards:** group /oc/ with creative boards in navigation ([1aff4f2](https://github.com/bitsocialnet/5chan/commit/1aff4f254de9cfbd852a3999d859bb60c8a3054f))
+* **branding:** darken light green clover shading ([01049b4](https://github.com/bitsocialnet/5chan/commit/01049b4612855c1fe8eaa37bdd7f9a0cf3c407a3))
+* **branding:** soften clover across app and platform assets ([f72746c](https://github.com/bitsocialnet/5chan/commit/f72746ccd1f0f4a20aa1fa70d6f9aec6ef78d310))
+* **branding:** soften clover shading to match 4chan ([c716cb2](https://github.com/bitsocialnet/5chan/commit/c716cb263a7eeab01c6231e97ba997b7913d6163))
+* **branding:** soften original clover with a subtle blur ([75a6ee2](https://github.com/bitsocialnet/5chan/commit/75a6ee2000515b8e7cceb5112448dd621a8fbb04))
+* **build:** stop a stuck static-shell render from holding CI for hours ([#1247](https://github.com/bitsocialnet/5chan/issues/1247)) ([3fdbddc](https://github.com/bitsocialnet/5chan/commit/3fdbddc92cdba9d8a48923bebfa02c386fbd9f54))
+* **catalog:** keep the page footer reachable at the bottom of /all catalog ([42751f7](https://github.com/bitsocialnet/5chan/commit/42751f7d8ee7d93885891ba65214317d13af22b0))
+* **catalog:** keep thumbnails from stretching when post dimensions are wrong ([fdc2cda](https://github.com/bitsocialnet/5chan/commit/fdc2cda8936a36ac9464e667f70cb281d5eb5dde))
+* **challenge-modal:** drop redundant close button from iframe consent ([8aaa361](https://github.com/bitsocialnet/5chan/commit/8aaa361efa42a3f7706c101f157ea172ddeb14d3))
+* **desktop:** limit the reachability notice to the app's own RPC port ([3ebdfe4](https://github.com/bitsocialnet/5chan/commit/3ebdfe40b368ec4b07f65a21571913361dd4a62d))
+* **dev server:** limit Vite dependency scan to the app entry ([8132921](https://github.com/bitsocialnet/5chan/commit/8132921139488abdd34549db17add7c3957716f1))
+* **directory:** clarify testnet votes, move board submission below the list, fit mobile ([97d0a76](https://github.com/bitsocialnet/5chan/commit/97d0a769f26b4902e13abbce79541bba32e3add3))
+* **directory:** fit the directory tables on mobile ([29ef208](https://github.com/bitsocialnet/5chan/commit/29ef2086f3fa91801118f77181580a17972e43da))
+* **directory:** show voting notice above board buttons and shrink submit toggle ([c08befb](https://github.com/bitsocialnet/5chan/commit/c08befbb5c9a48909047d568aae552c77256d08d))
+* **electron:** package only the files the desktop app needs at runtime ([c618bc8](https://github.com/bitsocialnet/5chan/commit/c618bc82967e00086aee6447e52ac7a638870c73))
+* **electron:** skip the local codegraph index when packaging ([60fe175](https://github.com/bitsocialnet/5chan/commit/60fe175503a3b27fc28e3e72a385dc4ce296060e))
+* **feeds:** prevent mobile Safari scroll jumps ([045f0bc](https://github.com/bitsocialnet/5chan/commit/045f0bc18028c902b8ba2d20926632a9823a5a49))
+* **frames:** match 4chan header and toggle styling ([66c097f](https://github.com/bitsocialnet/5chan/commit/66c097f5a6cb435f50ba62ce94528712e27a335e))
+* **frames:** match Futaba and Burichan font sizes ([de205e9](https://github.com/bitsocialnet/5chan/commit/de205e90aeb0074aa2de9e4a911d26ce222aa239))
+* **home:** keep popular thread thumbnails small when the catalog uses large images ([a6f0fbf](https://github.com/bitsocialnet/5chan/commit/a6f0fbfb3e7ab2af0c1bd1fcdbecaec7804c03c5))
+* **home:** route multiboard links through catalog when enabled ([3ec2c37](https://github.com/bitsocialnet/5chan/commit/3ec2c371702c5c92aa231ec48d1a15749cd1771f))
+* **media hosting:** list only runtime-supported providers in settings ([a11488d](https://github.com/bitsocialnet/5chan/commit/a11488d9f4807fbe0b30f98db117e25fc16c12ce))
+* **media:** freeze cross-origin GIF thumbnails on canvas ([bbf5855](https://github.com/bitsocialnet/5chan/commit/bbf58550daa485edd6299f880f8e3d6689b3e3a2))
+* **posts:** prevent removed content flashing before moderation loads ([396753a](https://github.com/bitsocialnet/5chan/commit/396753a25f102dda767e929b0cdee5b78cc1255c))
+* **quotes:** strike through quotes of purged replies instead of searching the board ([#1222](https://github.com/bitsocialnet/5chan/issues/1222)) ([4d02d99](https://github.com/bitsocialnet/5chan/commit/4d02d993be66d8e6e0a837e51f87964e514dfbe5))
+* **review:** keep Claude review agents in the foreground so reviews run ([#1227](https://github.com/bitsocialnet/5chan/issues/1227)) ([bee30f2](https://github.com/bitsocialnet/5chan/commit/bee30f23318b00b770a42a0742bb08c47eb0b1f6))
+* **routing:** treat numeric board codes as board paths, not pages ([254e81d](https://github.com/bitsocialnet/5chan/commit/254e81ddf43a25ac2444021a9fe286ef80fe8c5c))
+* **settings:** keep a full node RPC entered while pure P2P is enabled ([#1232](https://github.com/bitsocialnet/5chan/issues/1232)) ([9707adb](https://github.com/bitsocialnet/5chan/commit/9707adb6c9598f1b8612d80935c9cb87ed1c08ad))
+* **settings:** keep the account import file input alive in Safari ([#1224](https://github.com/bitsocialnet/5chan/issues/1224)) ([3886754](https://github.com/bitsocialnet/5chan/commit/3886754c7ee4a9fc43b727f21b1eebab8b97bea7)), closes [#516](https://github.com/bitsocialnet/5chan/issues/516)
+* **startup:** preload entry assets and apply themes before paint ([73defff](https://github.com/bitsocialnet/5chan/commit/73defff96501f479946d9e6c8c106e8a225ee2c6))
+* **startup:** show the static home frame on return visits ([676fa64](https://github.com/bitsocialnet/5chan/commit/676fa647f4bf0d9540732e3f1deb2c480901f5f7))
+* **startup:** show the static home frame on return visits ([#1219](https://github.com/bitsocialnet/5chan/issues/1219)) ([6eab0a0](https://github.com/bitsocialnet/5chan/commit/6eab0a096984456007b6bedf7c4be1049663bbd8))
+* **tests:** keep the visual-qa node:test suite out of Vitest ([#1237](https://github.com/bitsocialnet/5chan/issues/1237)) ([be8ecc4](https://github.com/bitsocialnet/5chan/commit/be8ecc44413bfc6f256a72bd82dd1fb1cd892d92))
+* **tests:** mock pkc-js in Vitest setup to stop libp2p timer flakes ([#1234](https://github.com/bitsocialnet/5chan/issues/1234)) ([364dd9e](https://github.com/bitsocialnet/5chan/commit/364dd9e6d5d32131649d337fc5fa6555b3a805f8))
+* **themes:** load modal button images in the desktop app and keep them preloaded ([682d27e](https://github.com/bitsocialnet/5chan/commit/682d27e22280295d91e794273aeb6ffd33d27e66))
+* **thread:** stop Update and Auto hanging after replying, and the unread line under pending replies ([#1248](https://github.com/bitsocialnet/5chan/issues/1248)) ([1b1606c](https://github.com/bitsocialnet/5chan/commit/1b1606cfb614f822f80be9933a47852f0217f280))
+* **thread:** upgrade bitsocial-react-hooks to 0.1.48 so removed threads opened by link load ([#1238](https://github.com/bitsocialnet/5chan/issues/1238)) ([a8c40a0](https://github.com/bitsocialnet/5chan/commit/a8c40a0a7828af00c4b5f0669302ef556bcade26))
+* **ui:** style AI moderation notice link with theme colors ([bc947fa](https://github.com/bitsocialnet/5chan/commit/bc947facd246dc3e14bf5420efc7816b76bd4f24))
+* **upload:** detect a served Forge video without decoding it ([ab5f09a](https://github.com/bitsocialnet/5chan/commit/ab5f09aa3d57af476a62718bdb2b803c5768d231))
+* **upload:** fail forge uploads still in review instead of inserting a dead link ([e809643](https://github.com/bitsocialnet/5chan/commit/e809643c70cbed6379eb49960ae38c6a9eb52fae))
+* **upload:** register the upload-sent listener before opening the request ([#1246](https://github.com/bitsocialnet/5chan/issues/1246)) ([620e611](https://github.com/bitsocialnet/5chan/commit/620e611240886bbefbb98a15c9da734808b35e02))
+
+
+### Features
+
+* **archive:** hide the archive on boards with features.noArchive ([#1235](https://github.com/bitsocialnet/5chan/issues/1235)) ([0a134f2](https://github.com/bitsocialnet/5chan/commit/0a134f2edd058ff1bf3475d1778614e4bb1ae6bb))
+* **banners:** add volcanic ban revenge banner ([a308065](https://github.com/bitsocialnet/5chan/commit/a308065da6dd847e0637aee3f1a4414041ca652c))
+* **boards-bar:** add persistent boards bar setting for desktop ([12c88b9](https://github.com/bitsocialnet/5chan/commit/12c88b9048d849399ce2cb4e4c03217b56bf7883))
+* **boards-bar:** add traditional board list and auto-hide options ([ac735cf](https://github.com/bitsocialnet/5chan/commit/ac735cfecae417a57a9b0865ccaa0993d2b72daf))
+* **boards-bar:** match 4chan's persistent navigation details ([48ad4de](https://github.com/bitsocialnet/5chan/commit/48ad4deaa472ac297ede86560796b158c9ca95b7))
+* **boards:** create boards and edit board settings in the app ([#1243](https://github.com/bitsocialnet/5chan/issues/1243)) ([6251df5](https://github.com/bitsocialnet/5chan/commit/6251df5c9992995936bb05dc24f8ae0f1b256350))
+* **branding:** apply approved clover to high-resolution app assets ([a75fc9d](https://github.com/bitsocialnet/5chan/commit/a75fc9d9bbdd23ad6bd97e28f10bf123d0382ca5))
+* **branding:** refresh large five-leaf clover logo ([d7a517b](https://github.com/bitsocialnet/5chan/commit/d7a517bdb31900e883f0cc401548842e6c4f7688))
+* **catalog:** pin threads to the top with their unread reply count ([#1233](https://github.com/bitsocialnet/5chan/issues/1233)) ([7a36392](https://github.com/bitsocialnet/5chan/commit/7a36392964cdff8782206a12cb5aa552be816936)), closes [#602](https://github.com/bitsocialnet/5chan/issues/602)
+* **desktop:** warn when browsers can't reach a board this computer hosts ([#1244](https://github.com/bitsocialnet/5chan/issues/1244)) ([f7dca5d](https://github.com/bitsocialnet/5chan/commit/f7dca5d92dda09655ad2e1075eea50627103a017))
+* **directory voting:** cast, refresh, and submit directory votes ([#1216](https://github.com/bitsocialnet/5chan/issues/1216)) ([a1c3e00](https://github.com/bitsocialnet/5chan/commit/a1c3e005134d6233f80ecdfde78451977e5418af))
+* **directory:** require board settings to submit or host a directory ([#1231](https://github.com/bitsocialnet/5chan/issues/1231)) ([ec45748](https://github.com/bitsocialnet/5chan/commit/ec4574801f33b6d984f5f451b2c66a4bd69f0b8d)), closes [#879](https://github.com/bitsocialnet/5chan/issues/879)
+* **embeds:** embed Vimeo links with oEmbed thumbnails ([5ee5766](https://github.com/bitsocialnet/5chan/commit/5ee5766e52464daca47731c5b1bcb11e58cae508))
+* **frames:** add desktop board sidebar ([49d687f](https://github.com/bitsocialnet/5chan/commit/49d687f196530f273cbacfeaf54441698bd247f5))
+* **frames:** follow the active theme ([07fc3d6](https://github.com/bitsocialnet/5chan/commit/07fc3d65a2d3252a888253e3b0c868289344e0cc))
+* **home:** add dismissible homepage introduction preference ([189f16c](https://github.com/bitsocialnet/5chan/commit/189f16cdd12f58342c92cc5cf5bfe0fe5767ba87))
+* **jev:** add blind translation review workflow ([d0ac50b](https://github.com/bitsocialnet/5chan/commit/d0ac50be3cb3a6a6f1c4bb1c2d7cf317a54db0fe))
+* **jev:** add contrastive translation evaluation ([f67384b](https://github.com/bitsocialnet/5chan/commit/f67384b007f52a3d42774f11c497f0622f94007d))
+* **jev:** add opt-in file questions and pilot evaluation ([a339907](https://github.com/bitsocialnet/5chan/commit/a339907744f8f3606844a8212e85df91bb5dc545))
+* **moderation:** link the moved /trash/ post by number in the removal reason ([#1236](https://github.com/bitsocialnet/5chan/issues/1236)) ([a0d4b36](https://github.com/bitsocialnet/5chan/commit/a0d4b36db29e4ae8daf3c4409d387310ba00083d))
+* **search:** filter active archived and all posts ([0444593](https://github.com/bitsocialnet/5chan/commit/04445937f5761b516090525e1902fee3a50946cd))
+* **testing:** expand Jev evaluation and browser tooling ([0bc56d6](https://github.com/bitsocialnet/5chan/commit/0bc56d6a5ab3778080e94c5980e9aff6db5afff1))
+* **thread:** add 4chan-style Auto countdown, unread marker, and favicon alerts ([#1230](https://github.com/bitsocialnet/5chan/issues/1230)) ([fd1b42c](https://github.com/bitsocialnet/5chan/commit/fd1b42c59d3fae6810f175d1f70b125ac6ac754e))
+* **upload:** add Forge Images as the web upload provider ([6cc8acd](https://github.com/bitsocialnet/5chan/commit/6cc8acd140e481a2c226dfac38f4be0b8570c04c))
+* **upload:** tell uploaders when Forge holds a file for review ([822ef50](https://github.com/bitsocialnet/5chan/commit/822ef50484014dd9d77fbfce4cc71735849f70ba))
+* **upload:** upload attached files on Post and hide the Link To File field while a provider works ([#1245](https://github.com/bitsocialnet/5chan/issues/1245)) ([7692068](https://github.com/bitsocialnet/5chan/commit/769206833cd5e20c6c741a2de99e5ef3edf7a406))
+* **upload:** wait for pending Forge videos to start serving ([4807b15](https://github.com/bitsocialnet/5chan/commit/4807b1584ca217e3c4f5254170d2b2badb0d4e5f))
+* **visual-qa:** add optional Decisions screenshot checks and Jev comparison ([a31f565](https://github.com/bitsocialnet/5chan/commit/a31f5659164259c9e0be1b51168ae44fde15aced))
+
+
+### Performance Improvements
+
+* **startup:** paint each board's first frame and theme before the app loads ([#1220](https://github.com/bitsocialnet/5chan/issues/1220)) ([1ecf9a3](https://github.com/bitsocialnet/5chan/commit/1ecf9a31cac9c4870ab4650550e2f4d2ee2ba208))
+* **startup:** paint the home page immediately and load less before first render ([#1218](https://github.com/bitsocialnet/5chan/issues/1218)) ([6db189f](https://github.com/bitsocialnet/5chan/commit/6db189f1979bc3c3839cf984e413f25c39a6edd5))
+
+
+### Reverts
+
+* **branding:** restore original clover colors ([f650120](https://github.com/bitsocialnet/5chan/commit/f6501201fee310bd0f63d0d1fd140809c7a5a0b9))
+
+
+
 ## [0.9.21](https://github.com/bitsocialnet/5chan/compare/v0.9.20...v0.9.21) (2026-09-19)
 
 

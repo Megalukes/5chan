@@ -1,6 +1,13 @@
 {
   "entries": [
     {
+      "id": "release-0.10.0",
+      "kind": "release",
+      "timestamp": 1792065600,
+      "message": "v0.10.0: Media uploads on the web, board creation in the app, directory voting",
+      "version": "0.10.0"
+    },
+    {
       "id": "release-0.9.21",
       "kind": "release",
       "timestamp": 1789819200,
