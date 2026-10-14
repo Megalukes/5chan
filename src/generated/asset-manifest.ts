@@ -9,6 +9,7 @@ export const BANNERS = [
   'assets/banners/banner-4.png',
   'assets/banners/banner-5.png',
   'assets/banners/banner-6.jpg',
+  'assets/banners/banner-7.jpg',
 ] as const;
 
 export const NOT_FOUND_IMAGES = ['assets/not-found/not-found-1.png'] as const;
