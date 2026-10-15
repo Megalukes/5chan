@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { getFileDropHandlers, isPublishFileAttachment, type FileDragEvent } from '../attached-media';
 
-const picked = (name: string, mimeType: string) => ({ kind: 'picked' as const, id: name, name, mimeType });
+const picked = (name: string, mimeType: string) => ({ kind: 'picked' as const, id: name, name, mimeType, webPath: '' });
 
 describe('isPublishFileAttachment', () => {
   it('accepts the image and video formats the pickers offer', () => {
