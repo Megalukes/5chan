@@ -65,7 +65,7 @@ import usePublishPost from '../../hooks/use-publish-post';
 import usePublishReply from '../../hooks/use-publish-reply';
 import { useFileUpload } from '../../hooks/use-file-upload';
 import { useShowLinkField } from '../../hooks/use-show-link-field';
-import { getFileAttachment } from '../../lib/media-hosting/attached-media';
+import { getFileAttachment, getFileDropHandlers } from '../../lib/media-hosting/attached-media';
 import type { AttachedMedia, UploadPhase } from '../../lib/media-hosting/types';
 import { getShowUploadControls, isWebRuntime } from '../../lib/media-hosting/show-upload-controls';
 import { OEKAKI_WEB_WARNING_TEXT } from '../../lib/oekaki/oekaki-copy';
@@ -1272,7 +1272,7 @@ const PostFormTable = ({ closeForm, draftKey, hideForm, postCid }: { closeForm: 
   return (
     <>
       {/* Locks the fields while the attachment uploads, so the post cannot change after it was submitted. */}
-      <fieldset className={styles.uploadLock} disabled={isUploading}>
+      <fieldset className={styles.uploadLock} disabled={isUploading} {...getFileDropHandlers(attachMedia, canAttachFile && !isUploading)}>
         <table className={styles.postFormTable}>
           <tbody>
             <PostFormFields

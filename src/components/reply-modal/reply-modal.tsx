@@ -39,7 +39,7 @@ import usePublishReply from '../../hooks/use-publish-reply';
 import useIsMobile from '../../hooks/use-is-mobile';
 import { useFileUpload } from '../../hooks/use-file-upload';
 import { useShowLinkField } from '../../hooks/use-show-link-field';
-import { getFileAttachment } from '../../lib/media-hosting/attached-media';
+import { getFileAttachment, getFileDropHandlers } from '../../lib/media-hosting/attached-media';
 import type { AttachedMedia } from '../../lib/media-hosting/types';
 import { useVideoThumbnailLinkConversion } from '../../hooks/use-video-thumbnail-link-conversion';
 import usePublishSubmissionGuard from '../../hooks/use-publish-submission-guard';
@@ -709,7 +709,7 @@ const ReplyModal = ({ closeModal, locationDraftKey, showReplyModal, parentCid, p
         />
       </div>
       {/* Locks the fields while the attachment uploads, so the reply cannot change after it was submitted. */}
-      <fieldset className={styles.uploadLock} disabled={isUploading}>
+      <fieldset className={styles.uploadLock} disabled={isUploading} {...getFileDropHandlers(attachMedia, canAttachFile && !isUploading)}>
         <div className={styles.name}>
           <input
             key={account?.id ?? account?.name ?? account?.author?.address}

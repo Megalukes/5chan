@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { isPublishFileAttachment } from '../attached-media';
+import { describe, expect, it, vi } from 'vitest';
+import { getFileDropHandlers, isPublishFileAttachment, type FileDragEvent } from '../attached-media';
 
 const picked = (name: string, mimeType: string) => ({ kind: 'picked' as const, id: name, name, mimeType });
 
@@ -27,5 +27,65 @@ describe('isPublishFileAttachment', () => {
     expect(isPublishFileAttachment(picked('photo.jpg', 'image/jpg'))).toBe(true);
     expect(isPublishFileAttachment(picked('game.swf', 'application/octet-stream'))).toBe(false);
     expect(isPublishFileAttachment(picked('renamed.png', 'application/x-shockwave-flash'))).toBe(false);
+  });
+});
+
+describe('getFileDropHandlers', () => {
+  const dragEvent = (types: string[], files: File[] = []) => {
+    const preventDefault = vi.fn();
+    const dataTransfer = { types, files, dropEffect: 'none' };
+    return {
+      event: { preventDefault, dataTransfer } as unknown as FileDragEvent,
+      preventDefault,
+      dataTransfer,
+    };
+  };
+
+  it('attaches a dropped image', () => {
+    const onDropFile = vi.fn();
+    const file = new File(['x'], 'cat.png', { type: 'image/png' });
+    const { event, preventDefault } = dragEvent(['Files'], [file]);
+
+    getFileDropHandlers(onDropFile, true).onDrop?.(event);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(onDropFile).toHaveBeenCalledWith({ kind: 'file', file, name: 'cat.png', mimeType: 'image/png' });
+  });
+
+  it('accepts a dropped .swf by extension', () => {
+    const onDropFile = vi.fn();
+    const file = new File(['x'], 'Game.SWF', { type: '' });
+
+    getFileDropHandlers(onDropFile, true).onDrop?.(dragEvent(['Files'], [file]).event);
+
+    expect(onDropFile).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores an unsupported file without letting the browser open it', () => {
+    const onDropFile = vi.fn();
+    const { event, preventDefault } = dragEvent(['Files'], [new File(['x'], 'notes.pdf', { type: 'application/pdf' })]);
+
+    getFileDropHandlers(onDropFile, true).onDrop?.(event);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(onDropFile).not.toHaveBeenCalled();
+  });
+
+  it('leaves text drags to the browser', () => {
+    const onDropFile = vi.fn();
+    const handlers = getFileDropHandlers(onDropFile, true);
+    const over = dragEvent(['text/plain']);
+    const drop = dragEvent(['text/plain']);
+
+    handlers.onDragOver?.(over.event);
+    handlers.onDrop?.(drop.event);
+
+    expect(over.preventDefault).not.toHaveBeenCalled();
+    expect(drop.preventDefault).not.toHaveBeenCalled();
+    expect(onDropFile).not.toHaveBeenCalled();
+  });
+
+  it('returns no handlers when attaching is disabled', () => {
+    expect(getFileDropHandlers(vi.fn(), false)).toEqual({});
   });
 });
