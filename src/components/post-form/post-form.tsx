@@ -1249,11 +1249,13 @@ const PostFormTable = ({ closeForm, draftKey, hideForm, postCid }: { closeForm: 
       urlRef.current.value = '';
     }
   };
+  const unsupportedFileError = `${t('error')}: ${t('unsupported_file_type_alert')}`;
   // A Bitsocial comment carries one link, so an attachment replaces the link field's value.
   const attachMedia = (nextAttachment: AttachedMedia) => {
     if (!canAttachFile) return;
     clearLink();
     updateDraft({ attachment: nextAttachment });
+    setFormError((currentError) => (currentError === unsupportedFileError ? null : currentError));
   };
   const handleChooseFile = async () => {
     const chosen = await chooseFile();
@@ -1272,7 +1274,11 @@ const PostFormTable = ({ closeForm, draftKey, hideForm, postCid }: { closeForm: 
   return (
     <>
       {/* Locks the fields while the attachment uploads, so the post cannot change after it was submitted. */}
-      <fieldset className={styles.uploadLock} disabled={isUploading} {...getFileDropHandlers(attachMedia, canAttachFile && !isUploading)}>
+      <fieldset
+        className={styles.uploadLock}
+        disabled={isUploading}
+        {...getFileDropHandlers(attachMedia, canAttachFile && !isUploading, () => setFormError(unsupportedFileError))}
+      >
         <table className={styles.postFormTable}>
           <tbody>
             <PostFormFields

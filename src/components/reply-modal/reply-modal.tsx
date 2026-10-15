@@ -629,11 +629,13 @@ const ReplyModal = ({ closeModal, locationDraftKey, showReplyModal, parentCid, p
       urlRef.current.value = '';
     }
   };
+  const unsupportedFileError = `${t('error')}: ${t('unsupported_file_type_alert')}`;
   // A Bitsocial comment carries one link, so an attachment replaces the link field's value.
   const attachMedia = (nextAttachment: AttachedMedia) => {
     if (!canAttachFile) return;
     clearLink();
     updateDraft({ attachment: nextAttachment });
+    setError((currentError) => (currentError === unsupportedFileError ? null : currentError));
   };
   const handleChooseFile = async () => {
     const chosen = await chooseFile();
@@ -709,7 +711,11 @@ const ReplyModal = ({ closeModal, locationDraftKey, showReplyModal, parentCid, p
         />
       </div>
       {/* Locks the fields while the attachment uploads, so the reply cannot change after it was submitted. */}
-      <fieldset className={styles.uploadLock} disabled={isUploading} {...getFileDropHandlers(attachMedia, canAttachFile && !isUploading)}>
+      <fieldset
+        className={styles.uploadLock}
+        disabled={isUploading}
+        {...getFileDropHandlers(attachMedia, canAttachFile && !isUploading, () => setError(unsupportedFileError))}
+      >
         <div className={styles.name}>
           <input
             key={account?.id ?? account?.name ?? account?.author?.address}

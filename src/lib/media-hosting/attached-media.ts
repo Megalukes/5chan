@@ -34,9 +34,10 @@ const isFileDrag = (event: FileDragEvent) => event.dataTransfer.types.includes('
 /**
  * Drag-and-drop props for a form area, so a file dropped on it is attached like one chosen with the picker.
  * Text drags pass through untouched. File drops are always cancelled, so a file dropped while attaching is
- * disabled or an upload runs, or one of an unsupported type, is ignored instead of the browser opening it.
+ * disabled or an upload runs is ignored instead of the browser opening it, and one of an unsupported type
+ * is reported through `onUnsupportedFile`, since the picker never offers it.
  */
-export function getFileDropHandlers(onDropFile: (media: AttachedMedia) => void, enabled: boolean) {
+export function getFileDropHandlers(onDropFile: (media: AttachedMedia) => void, enabled: boolean, onUnsupportedFile?: () => void) {
   return {
     onDragOver: (event: FileDragEvent) => {
       if (!isFileDrag(event)) return;
@@ -47,7 +48,9 @@ export function getFileDropHandlers(onDropFile: (media: AttachedMedia) => void, 
       if (!isFileDrag(event)) return;
       event.preventDefault();
       const file = event.dataTransfer.files[0];
-      if (enabled && file && isAcceptedUploadFile(file)) onDropFile(getFileAttachment(file));
+      if (!enabled || !file) return;
+      if (isAcceptedUploadFile(file)) onDropFile(getFileAttachment(file));
+      else onUnsupportedFile?.();
     },
   };
 }

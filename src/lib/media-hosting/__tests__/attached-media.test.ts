@@ -61,14 +61,16 @@ describe('getFileDropHandlers', () => {
     expect(onDropFile).toHaveBeenCalledTimes(1);
   });
 
-  it('ignores an unsupported file without letting the browser open it', () => {
+  it('reports an unsupported file instead of attaching it or letting the browser open it', () => {
     const onDropFile = vi.fn();
+    const onUnsupportedFile = vi.fn();
     const { event, preventDefault } = dragEvent(['Files'], [new File(['x'], 'notes.pdf', { type: 'application/pdf' })]);
 
-    getFileDropHandlers(onDropFile, true).onDrop(event);
+    getFileDropHandlers(onDropFile, true, onUnsupportedFile).onDrop(event);
 
     expect(preventDefault).toHaveBeenCalled();
     expect(onDropFile).not.toHaveBeenCalled();
+    expect(onUnsupportedFile).toHaveBeenCalledTimes(1);
   });
 
   it('leaves text drags to the browser', () => {
@@ -96,16 +98,21 @@ describe('getFileDropHandlers', () => {
 
   it('still cancels file drops while attaching is disabled, without attaching', () => {
     const onDropFile = vi.fn();
-    const handlers = getFileDropHandlers(onDropFile, false);
+    const onUnsupportedFile = vi.fn();
+    const handlers = getFileDropHandlers(onDropFile, false, onUnsupportedFile);
     const over = dragEvent(['Files']);
     const drop = dragEvent(['Files'], [new File(['x'], 'cat.png', { type: 'image/png' })]);
+    const unsupportedDrop = dragEvent(['Files'], [new File(['x'], 'notes.pdf', { type: 'application/pdf' })]);
 
     handlers.onDragOver(over.event);
     handlers.onDrop(drop.event);
+    handlers.onDrop(unsupportedDrop.event);
 
     expect(over.preventDefault).toHaveBeenCalled();
     expect(over.dataTransfer.dropEffect).toBe('none');
     expect(drop.preventDefault).toHaveBeenCalled();
+    expect(unsupportedDrop.preventDefault).toHaveBeenCalled();
     expect(onDropFile).not.toHaveBeenCalled();
+    expect(onUnsupportedFile).not.toHaveBeenCalled();
   });
 });
