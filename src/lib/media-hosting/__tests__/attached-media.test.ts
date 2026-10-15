@@ -46,7 +46,7 @@ describe('getFileDropHandlers', () => {
     const file = new File(['x'], 'cat.png', { type: 'image/png' });
     const { event, preventDefault } = dragEvent(['Files'], [file]);
 
-    getFileDropHandlers(onDropFile, true).onDrop?.(event);
+    getFileDropHandlers(onDropFile, true).onDrop(event);
 
     expect(preventDefault).toHaveBeenCalled();
     expect(onDropFile).toHaveBeenCalledWith({ kind: 'file', file, name: 'cat.png', mimeType: 'image/png' });
@@ -56,7 +56,7 @@ describe('getFileDropHandlers', () => {
     const onDropFile = vi.fn();
     const file = new File(['x'], 'Game.SWF', { type: '' });
 
-    getFileDropHandlers(onDropFile, true).onDrop?.(dragEvent(['Files'], [file]).event);
+    getFileDropHandlers(onDropFile, true).onDrop(dragEvent(['Files'], [file]).event);
 
     expect(onDropFile).toHaveBeenCalledTimes(1);
   });
@@ -65,7 +65,7 @@ describe('getFileDropHandlers', () => {
     const onDropFile = vi.fn();
     const { event, preventDefault } = dragEvent(['Files'], [new File(['x'], 'notes.pdf', { type: 'application/pdf' })]);
 
-    getFileDropHandlers(onDropFile, true).onDrop?.(event);
+    getFileDropHandlers(onDropFile, true).onDrop(event);
 
     expect(preventDefault).toHaveBeenCalled();
     expect(onDropFile).not.toHaveBeenCalled();
@@ -77,15 +77,35 @@ describe('getFileDropHandlers', () => {
     const over = dragEvent(['text/plain']);
     const drop = dragEvent(['text/plain']);
 
-    handlers.onDragOver?.(over.event);
-    handlers.onDrop?.(drop.event);
+    handlers.onDragOver(over.event);
+    handlers.onDrop(drop.event);
 
     expect(over.preventDefault).not.toHaveBeenCalled();
     expect(drop.preventDefault).not.toHaveBeenCalled();
     expect(onDropFile).not.toHaveBeenCalled();
   });
 
-  it('returns no handlers when attaching is disabled', () => {
-    expect(getFileDropHandlers(vi.fn(), false)).toEqual({});
+  it('accepts a dropped image the OS reports without a MIME type, by extension', () => {
+    const onDropFile = vi.fn();
+    const file = new File(['x'], 'photo.WEBP', { type: '' });
+
+    getFileDropHandlers(onDropFile, true).onDrop(dragEvent(['Files'], [file]).event);
+
+    expect(onDropFile).toHaveBeenCalledWith({ kind: 'file', file, name: 'photo.WEBP', mimeType: '' });
+  });
+
+  it('still cancels file drops while attaching is disabled, without attaching', () => {
+    const onDropFile = vi.fn();
+    const handlers = getFileDropHandlers(onDropFile, false);
+    const over = dragEvent(['Files']);
+    const drop = dragEvent(['Files'], [new File(['x'], 'cat.png', { type: 'image/png' })]);
+
+    handlers.onDragOver(over.event);
+    handlers.onDrop(drop.event);
+
+    expect(over.preventDefault).toHaveBeenCalled();
+    expect(over.dataTransfer.dropEffect).toBe('none');
+    expect(drop.preventDefault).toHaveBeenCalled();
+    expect(onDropFile).not.toHaveBeenCalled();
   });
 });
